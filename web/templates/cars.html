@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dostępne Samochody</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Dostępne Samochody</h1>
+        <nav>
+            <a href="/">Strona Główna</a> |
+            <a href="/cars">Dostępne Samochody</a>
+        </nav>
+    </header>
+    <main>
+        <ul>
+            {% for car in cars %}
+            <li>
+                <h3>{{ car.make }} {{ car.model }} ({{ car.year }})</h3>
+                <p>Cena za dzień: {{ car.price_per_day }} PLN</p>
+                <a href="{{ url_for('rental', car_id=car.id) }}">Wypożycz</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </main>
+</body>
+</html>

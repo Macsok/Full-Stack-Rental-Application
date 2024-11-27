@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wypożyczenie Samochodu</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Wypożycz samochód</h1>
+        <nav>
+            <a href="/">Strona Główna</a> |
+            <a href="/cars">Dostępne Samochody</a>
+        </nav>
+    </header>
+    <main>
+        <h2>{{ car.make }} {{ car.model }}</h2>
+        <form method="POST">
+            <label for="customer_name">Imię i nazwisko</label>
+            <input type="text" name="customer_name" required><br>
+            <label for="rental_date">Data wypożyczenia</label>
+            <input type="date" name="rental_date" required><br>
+            <label for="return_date">Data zwrotu</label>
+            <input type="date" name="return_date" required><br>
+            <button type="submit">Wypożycz</button>
+        </form>
+    </main>
+</body>
+</html>
