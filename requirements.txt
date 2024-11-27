@@ -1,2 +1,8 @@
-Flask==2.3.2
-mysql-connector-python==8.0.33
+Flask==3.1.0
+mysql-connector-python==9.1.0
+
+# API / Database
+uvicorn==0.32.1
+SQLAlchemy==2.0.36
+PyMySQL==1.1.1
+fastapi==0.115.5
