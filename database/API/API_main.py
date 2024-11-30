@@ -82,3 +82,16 @@ async def read_user(user_id: int, db: db_dependency):
     if user is None:
         raise HTTPException(status_code=404, detail='User not found')
     return user
+
+
+#-------------------------------------------------
+class CarBase(BaseModel):
+    brand: str
+    model: str
+    year: int
+
+@app.post("/cars", status_code=status.HTTP_201_CREATED)
+async def create_car(car: CarBase, db: db_dependency):
+    db_car = models.Car(**car.dict())
+    db.add(db_car)
+    db.commit()
