@@ -4,6 +4,7 @@ from typing import Annotated
 import models as models
 from database import engine, SessionLocal
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 
 
 app = FastAPI()
@@ -46,12 +47,17 @@ async def read_post(post_id: int, db: db_dependency):
     return post
 
 
-@app.get("/posts/{post_title}", status_code=status.HTTP_200_OK)
+@app.get("/posts_vulnerable/{post_title}", status_code=status.HTTP_200_OK)
 async def read_post(post_title: str, db: db_dependency):
-    post = db.query(models.Post).filter(models.Post.title == post_title).first()
-    if post is None:
+    # Example of SQL Injection:
+    # If post_title is "' OR '1'='1", the query becomes:
+    # SELECT * FROM posts WHERE title = '' OR '1'='1'
+    # This will return all rows in the posts table.
+    # http://localhost:8000/posts_vulnerable/%27%20OR%20%271%27%3D%271
+    posts = db.execute(text(f"SELECT * FROM posts WHERE title = '{post_title}'")).fetchall()
+    if not posts:
         raise HTTPException(status_code=404, detail='Post was not found')
-    return post
+    return [dict(post._mapping) for post in posts]
 
 
 @app.delete("/posts", status_code=status.HTTP_200_OK)
