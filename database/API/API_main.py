@@ -2,23 +2,17 @@ from fastapi import FastAPI, HTTPException, Depends, status
 from pydantic import BaseModel
 from typing import Annotated
 import models as models
-from database import engine, SessionLocal
+from bases import *
+from database_connection import engine, SessionLocal
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 
 
+# To test API visit http://localhost:8000/docs#
+
+
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
-
-
-class PostBase(BaseModel):
-    title: str
-    content: str
-    user_id: int
-
-
-class UserBase(BaseModel):
-    username: str
 
 
 def get_db():
@@ -32,66 +26,61 @@ def get_db():
 db_dependency = Annotated[Session, Depends(get_db)]
 
 
-@app.post("/posts", status_code=status.HTTP_201_CREATED)
-async def create_post(post: PostBase, db: db_dependency):
-    db_post = models.Post(**post.dict())
-    db.add(db_post)
-    db.commit()
+@app.get("/api/v1/cars_vulnerable", status_code=status.HTTP_200_OK)
+# This endpoint is vulnerable to SQL Injection
+async def read_cars_vulnerable(
+    db: db_dependency,
+    car_id: int = None,
+    brand: str = None, 
+    model: str = None, 
+    year: int = None
+):
+    query = []
+    if car_id:
+        query = db.execute(text(f"SELECT * FROM cars WHERE id = {car_id}")).fetchall()
+    if brand:
+        query = db.execute(text(f"SELECT * FROM cars WHERE brand = '{brand}'")).fetchall()
+    if model:
+        query = db.execute(text(f"SELECT * FROM cars WHERE model = '{model}'")).fetchall()
+    if year:
+        query = db.execute(text(f"SELECT * FROM cars WHERE year = {year}")).fetchall()
+    if not query:
+        raise HTTPException(status_code=404, detail='Car was not found')
+    return [dict(car._mapping) for car in query]
 
 
-@app.get("/posts/{post_id}", status_code=status.HTTP_200_OK)
-async def read_post(post_id: int, db: db_dependency):
-    post = db.query(models.Post).filter(models.Post.id == post_id).first()
-    if post is None:
-        raise HTTPException(status_code=404, detail='Post was not found')
-    return post
-
-
-@app.get("/posts_vulnerable/{post_title}", status_code=status.HTTP_200_OK)
-async def read_post(post_title: str, db: db_dependency):
-    # Example of SQL Injection:
-    # If post_title is "' OR '1'='1", the query becomes:
-    # SELECT * FROM posts WHERE title = '' OR '1'='1'
-    # This will return all rows in the posts table.
-    # http://localhost:8000/posts_vulnerable/%27%20OR%20%271%27%3D%271
-    posts = db.execute(text(f"SELECT * FROM posts WHERE title = '{post_title}'")).fetchall()
-    if not posts:
-        raise HTTPException(status_code=404, detail='Post was not found')
-    return [dict(post._mapping) for post in posts]
-
-
-@app.delete("/posts", status_code=status.HTTP_200_OK)
-async def delete_post(post_id: int, db: db_dependency):
-    db_post = db.query(models.Post).filter(models.Post.id == post_id).first()
-    if db is None:
-        raise HTTPException(status_code=404, detail='Post was not found')
-    db.delete(db_post)
-    db.commit()
-
-
-@app.post("/users", status_code=status.HTTP_201_CREATED)
-async def create_user(user: UserBase, db: db_dependency):
-    db_user = models.User(**user.dict())
-    db.add(db_user)
-    db.commit()
-
-
-@app.get("/users/{user_id}", status_code=status.HTTP_200_OK)
-async def read_user(user_id: int, db: db_dependency):
-    user = db.query(models.User).filter(models.User.id == user_id).first()
-    if user is None:
-        raise HTTPException(status_code=404, detail='User not found')
-    return user
-
-
-#-------------------------------------------------
-class CarBase(BaseModel):
-    brand: str
-    model: str
-    year: int
-
-@app.post("/cars", status_code=status.HTTP_201_CREATED)
+@app.post("/api/v1/cars", status_code=status.HTTP_201_CREATED)
 async def create_car(car: CarBase, db: db_dependency):
-    db_car = models.Car(**car.dict())
-    db.add(db_car)
+    new_data = models.Car(**car.dict())
+    db.add(new_data)
+    db.commit()
+
+
+@app.get("/api/v1/cars", status_code=status.HTTP_200_OK)
+async def read_cars(
+    db: db_dependency,
+    car_id: int = None,
+    brand: str = None, 
+    model: str = None, 
+    year: int = None
+):
+    query = db.query(models.Car)
+    if car_id:
+        query = query.filter(models.Car.id == car_id)
+    if brand:
+        query = query.filter(models.Car.brand == brand)
+    if model:
+        query = query.filter(models.Car.model == model)
+    if year:
+        query = query.filter(models.Car.year == year)
+    cars = query.all()
+    if not cars:
+        raise HTTPException(status_code=404, detail='Car was not found')
+    return cars
+
+
+@app.post("/api/v1/rentals", status_code=status.HTTP_201_CREATED)
+async def create_rental(car: RentalBase, db: db_dependency):
+    new_data = models.Rental(**car.dict())
+    db.add(new_data)
     db.commit()
