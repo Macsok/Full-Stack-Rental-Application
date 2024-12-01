@@ -2,25 +2,6 @@ from sqlalchemy import Boolean, Column, Integer, String, Date, ForeignKey
 from database import Base
 
 
-# class User(Base):
-#     __tablename__ = 'users'
-
-#     id = Column(Integer, primary_key=True, index=True)
-#     username = Column(String(50), unique=True)  # We want every user to have unique name
-
-
-# class Post(Base):
-#     __tablename__ = 'posts'
-
-#     id = Column(Integer, primary_key=True, index=True)
-#     title = Column(String(50))
-#     content = Column(String(100))
-#     user_id = Column(Integer)
-
-
-#-------------------------------------------------
-
-
 class Car(Base):
     __tablename__ = 'cars'
 
@@ -31,12 +12,12 @@ class Car(Base):
 
 
 class CarDetails(Base):
-    __tablename__ = 'car_details' 
+    __tablename__ = 'car_details'
 
-    id = Column(Integer, ForeignKey('cars.id'), primary_key=True,index=True)
+    id = Column(Integer, ForeignKey('cars.id'), primary_key=True, index=True)
+    location_id = Column(Integer, ForeignKey('locations.id'))
     price_per_day = Column(Integer)
     horse_power = Column(Integer)
-    location = Column(String(50))
 
 
 class Rental(Base):
@@ -51,7 +32,7 @@ class Rental(Base):
 class RentalDetails(Base):
     __tablename__ = 'rental_details'
 
-    id = Column(Integer, ForeignKey('rentals.id'),primary_key=True, index=True)
+    id = Column(Integer, ForeignKey('rentals.id'), primary_key=True, index=True)
     customer_id = Column(Integer, ForeignKey('users.id'))
     total_price = Column(Integer)
 
@@ -60,26 +41,18 @@ class User(Base):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String(50))
-    is_active = Column(Boolean, default=True)
+    username = Column(String(50), unique=True)
 
 
 class UserDetail(Base):
     __tablename__ = 'user_details'
 
     id = Column(Integer, ForeignKey('users.id'), primary_key=True, index=True)
+    address_id = Column(Integer, ForeignKey('addresses.id'))
+    is_active = Column(Boolean, default=True)
     role = Column(String(50))
     email = Column(String(50))
     phone = Column(String(50))
-
-
-class UserAddress(Base):
-    __tablename__ = 'user_address'
-
-    id = Column(Integer, ForeignKey('users.id'), primary_key=True, index=True)
-    address = Column(String(50))
-    city = Column(String(50))
-    country = Column(String(50))
 
 
 class Password(Base):
@@ -93,7 +66,14 @@ class Location(Base):
     __tablename__ = 'locations'
 
     id = Column(Integer, primary_key=True, index=True)
+    address_id = Column(Integer, ForeignKey('addresses.id'))
     name = Column(String(50))
+
+
+class Address(Base):
+    __tablename__ = 'addresses'
+
+    id = Column(Integer, primary_key=True, index=True)
     address = Column(String(50))
     city = Column(String(50))
     country = Column(String(50))
@@ -103,8 +83,14 @@ class Payment(Base):
     __tablename__ = 'payments'
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey('users.id'))
     rental_id = Column(Integer, ForeignKey('rentals.id'))
+
+
+class PaymentDetails(Base):
+    __tablename__ = 'payment_details'
+
+    id = Column(Integer, ForeignKey('payments.id'), primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey('users.id'))
     amount = Column(Integer)
     method = Column(String(50))
     payment_date = Column(Date)
