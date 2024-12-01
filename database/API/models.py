@@ -1,11 +1,11 @@
 from sqlalchemy import Boolean, Column, Integer, String, Date, ForeignKey
-from database import Base
+from database_connection import Base
 
 
 class Car(Base):
     __tablename__ = 'cars'
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     brand = Column(String(50))
     model = Column(String(50))
     year = Column(Integer)
@@ -23,7 +23,7 @@ class CarDetails(Base):
 class Rental(Base):
     __tablename__ = 'rentals'
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     car_id = Column(Integer, ForeignKey('cars.id'))
     rental_date = Column(Date)
     return_date = Column(Date)
@@ -40,7 +40,7 @@ class RentalDetails(Base):
 class User(Base):
     __tablename__ = 'users'
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     username = Column(String(50), unique=True)
 
 
@@ -65,7 +65,7 @@ class Password(Base):
 class Location(Base):
     __tablename__ = 'locations'
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     address_id = Column(Integer, ForeignKey('addresses.id'))
     name = Column(String(50))
 
@@ -73,7 +73,7 @@ class Location(Base):
 class Address(Base):
     __tablename__ = 'addresses'
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     address = Column(String(50))
     city = Column(String(50))
     country = Column(String(50))
@@ -82,7 +82,7 @@ class Address(Base):
 class Payment(Base):
     __tablename__ = 'payments'
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     rental_id = Column(Integer, ForeignKey('rentals.id'))
 
 
