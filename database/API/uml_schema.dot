@@ -1,0 +1,15 @@
+digraph "classes" {
+rankdir=BT
+charset="utf-8"
+"Address" [color="black", fontcolor="black", label=<{Address|address<br ALIGN="LEFT"/>city<br ALIGN="LEFT"/>country<br ALIGN="LEFT"/>id<br ALIGN="LEFT"/>|}>, shape="record", style="solid"];
+"Car" [color="black", fontcolor="black", label=<{Car|brand<br ALIGN="LEFT"/>id<br ALIGN="LEFT"/>model<br ALIGN="LEFT"/>year<br ALIGN="LEFT"/>|}>, shape="record", style="solid"];
+"CarDetails" [color="black", fontcolor="black", label=<{CarDetails|horse_power<br ALIGN="LEFT"/>id<br ALIGN="LEFT"/>location_id<br ALIGN="LEFT"/>price_per_day<br ALIGN="LEFT"/>|}>, shape="record", style="solid"];
+"Location" [color="black", fontcolor="black", label=<{Location|address_id<br ALIGN="LEFT"/>id<br ALIGN="LEFT"/>name<br ALIGN="LEFT"/>|}>, shape="record", style="solid"];
+"Password" [color="black", fontcolor="black", label=<{Password|id<br ALIGN="LEFT"/>password<br ALIGN="LEFT"/>|}>, shape="record", style="solid"];
+"Payment" [color="black", fontcolor="black", label=<{Payment|id<br ALIGN="LEFT"/>rental_id<br ALIGN="LEFT"/>|}>, shape="record", style="solid"];
+"PaymentDetails" [color="black", fontcolor="black", label=<{PaymentDetails|amount<br ALIGN="LEFT"/>id<br ALIGN="LEFT"/>method<br ALIGN="LEFT"/>payment_date<br ALIGN="LEFT"/>user_id<br ALIGN="LEFT"/>|}>, shape="record", style="solid"];
+"Rental" [color="black", fontcolor="black", label=<{Rental|car_id<br ALIGN="LEFT"/>id<br ALIGN="LEFT"/>rental_date<br ALIGN="LEFT"/>return_date<br ALIGN="LEFT"/>|}>, shape="record", style="solid"];
+"RentalDetails" [color="black", fontcolor="black", label=<{RentalDetails|customer_id<br ALIGN="LEFT"/>id<br ALIGN="LEFT"/>total_price<br ALIGN="LEFT"/>|}>, shape="record", style="solid"];
+"User" [color="black", fontcolor="black", label=<{User|id<br ALIGN="LEFT"/>username<br ALIGN="LEFT"/>|}>, shape="record", style="solid"];
+"UserDetail" [color="black", fontcolor="black", label=<{UserDetail|address_id<br ALIGN="LEFT"/>email<br ALIGN="LEFT"/>id<br ALIGN="LEFT"/>is_active<br ALIGN="LEFT"/>phone<br ALIGN="LEFT"/>role<br ALIGN="LEFT"/>|}>, shape="record", style="solid"];
+}
