@@ -1,0 +1,78 @@
+# Instalacja docker compose:
+
+sudo curl -SL "https://github.com/docker/compose/releases/download/v2.32.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+sudo chmod +755 /usr/local/bin/docker-compose
+docker-compose version
+
+
+# docker-compose.yml do Master-Slave baz danych:
+#----------------------------------------------
+# This line tells Docker Compose the version we're using
+version: "3"
+
+# Here's where we define our services:
+services:
+  # The master server, the OG in this world
+  mysql-master:
+    # We'll use the latest MySQL image from Docker Hub
+    image: mysql:8.0
+    # Give it a cool name (mysql-master is pretty clear, right?)
+    container_name: mysql-master
+    # Extra commands to configure the master for replication
+    command: --server-id=1 --log-bin=mysql-bin --binlog-format=row
+    # Set some environment variables for passwords and database details
+    # Remember to replace these with your own strong passwords!
+    environment:
+      MYSQL_ROOT_PASSWORD: root_pass
+      MYSQL_DATABASE: car_rental_db # Feel free to change this database name
+      MYSQL_USER: replication_user # This user will handle replication
+      MYSQL_PASSWORD: user_pass
+    # Map the container port (3306) to your host machine's port (also 3306)
+    # This lets you access the master server from your machine
+    ports:
+      - "3306:3306"
+
+  # The replica server, the master's trusty sidekick
+  mysql-slave:
+    # Same image as the master
+    image: mysql:8.0
+    # Another cool name (can you guess what it is?)
+    container_name: mysql-slave
+    # This tells the replica to wait for the master to be ready before starting
+    depends_on:
+      - mysql-master
+    # Similar commands and environment variables as the master
+    command: --server-id=2 --log-bin=mysql-bin --binlog-format=row
+    environment:
+      MYSQL_ROOT_PASSWORD: root_pass # Same password for both
+      MYSQL_DATABASE: car_rental_db
+      MYSQL_USER: replication_user
+      MYSQL_PASSWORD: user_pass
+    # Map the container port (3306) to a different host machine port (3307 in this case)
+    ports:
+      - "3307:3306"
+
+#------------------------------------------
+
+# Uruchomienie kontenerów
+docker-compose up -d
+
+# Wejście do kontenera
+docker exec it [np. mysql-master] bash
+
+# Wejście na serwer MySQL
+mysql -u [np. root] -p
+
+# Sprawdzenie uprawnień (z poziomu master)
+SHOW GRANTS FOR 'replication_user'@'%';
+
+# Sprawdzenie plików binarnych
+SHOW BINARY LOG STATUS;
+
+# Tworzenie użytkowanika
+ALTER USER 'replication_user'@'%' IDENTIFIED WITH 'mysql_native_password';
+
+docker exec -it mysql-slave bash
+mysql -uroot -p
+CHANGE MASTER TO MASTER_HOST='mysql-master', MASTER_USER='replication_user', MASTER_PASSWORD='replication_password', MASTER_LOG_FILE='mysql-bin.000003', MASTER_LOG_POS=882;
