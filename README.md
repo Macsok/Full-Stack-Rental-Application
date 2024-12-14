@@ -51,9 +51,9 @@ docker-compose version
 
 3. **Start the Docker containers**:
    - Run the following command to start the containers:
-     ```sh
-     docker-compose up -d
-     ```
+    ```sh
+    docker-compose up -d
+    ```
 
 4. **Configure the Master database**:
    - Access the master container:
