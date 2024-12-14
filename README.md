@@ -16,35 +16,35 @@ Setting up a master-slave database replication involves configuring one database
 > docker-compose version
 
 2. **Create a Docker Compose file**:
-- Create a `docker-compose.yml` file with the following content:
-```yaml
-services:
-mysql-master:
-    image: mysql:8.0
-    container_name: mysql-master
-    command: --server-id=1 --log-bin=mysql-bin --binlog-format=row
-    environment:
-    MYSQL_ROOT_PASSWORD: root_pass
-    MYSQL_DATABASE: car_rental_db
-    MYSQL_USER: replication_user
-    MYSQL_PASSWORD: user_pass
-    ports:
-    - "3306:3306"
+    - Create a `docker-compose.yml` file with the following content:
+    ```yaml
+    services:
+    mysql-master:
+        image: mysql:8.0
+        container_name: mysql-master
+        command: --server-id=1 --log-bin=mysql-bin --binlog-format=row
+        environment:
+        MYSQL_ROOT_PASSWORD: root_pass
+        MYSQL_DATABASE: car_rental_db
+        MYSQL_USER: replication_user
+        MYSQL_PASSWORD: user_pass
+        ports:
+        - "3306:3306"
 
-mysql-slave:
-    image: mysql:8.0
-    container_name: mysql-slave
-    depends_on:
-    - mysql-master
-    command: --server-id=2 --log-bin=mysql-bin --binlog-format=row
-    environment:
-    MYSQL_ROOT_PASSWORD: root_pass
-    MYSQL_DATABASE: car_rental_db
-    MYSQL_USER: replication_user
-    MYSQL_PASSWORD: user_pass
-    ports:
-    - "3307:3306"
-```
+    mysql-slave:
+        image: mysql:8.0
+        container_name: mysql-slave
+        depends_on:
+        - mysql-master
+        command: --server-id=2 --log-bin=mysql-bin --binlog-format=row
+        environment:
+        MYSQL_ROOT_PASSWORD: root_pass
+        MYSQL_DATABASE: car_rental_db
+        MYSQL_USER: replication_user
+        MYSQL_PASSWORD: user_pass
+        ports:
+        - "3307:3306"
+    ```
 
 3. **Start the Docker containers**:
    - Run the following command to start the containers:
