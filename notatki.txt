@@ -54,6 +54,34 @@ services:
       - "3307:3306"
 
 #------------------------------------------
+# Short version
+services:
+  mysql-master:
+    image: mysql:8.0
+    container_name: mysql-master
+    command: --server-id=1 --log-bin=mysql-bin --binlog-format=row
+    environment:
+      MYSQL_ROOT_PASSWORD: root_pass
+      MYSQL_DATABASE: car_rental_db # Feel free to change this database name
+      MYSQL_USER: replication_user # This user will handle replication
+      MYSQL_PASSWORD: user_pass
+    ports:
+      - "3306:3306"
+
+  mysql-slave:
+    image: mysql:8.0
+    container_name: mysql-slave
+    depends_on:
+      - mysql-master
+    command: --server-id=2 --log-bin=mysql-bin --binlog-format=row
+    environment:
+      MYSQL_ROOT_PASSWORD: root_pass # Same password for both
+      MYSQL_DATABASE: car_rental_db
+      MYSQL_USER: replication_user
+      MYSQL_PASSWORD: user_pass
+    ports:
+      - "3307:3306"
+#------------------------------------------
 
 # Uruchomienie kontenerów
 docker-compose up -d
@@ -70,9 +98,31 @@ SHOW GRANTS FOR 'replication_user'@'%';
 # Sprawdzenie plików binarnych
 SHOW BINARY LOG STATUS;
 
-# Tworzenie użytkowanika
+# Tworzenie użytkownika (MySQL 9.0+)
 ALTER USER 'replication_user'@'%' IDENTIFIED WITH 'mysql_native_password';
 
-docker exec -it mysql-slave bash
-mysql -uroot -p
-CHANGE MASTER TO MASTER_HOST='mysql-master', MASTER_USER='replication_user', MASTER_PASSWORD='replication_password', MASTER_LOG_FILE='mysql-bin.000003', MASTER_LOG_POS=882;
+# Tworzenie użytkownika (MySQL 8.0)
+ALTER USER 'replication_user'@'%' IDENTIFIED WITH 'mysql_native_password' BY 'replication_password';
+GRANT REPLICATION SLAVE ON *.* TO 'replication_user'@'%';
+FLUSH PRIVILEGES;
+SHOW MASTER STATUS;
+
+# Ustawienie konfiguracji replikacji (na Slave'ie, MySQL 8.0)
+CHANGE MASTER TO
+  MASTER_HOST='mysql-master',
+  MASTER_USER='replication_user',
+  MASTER_PASSWORD='replication_password',
+  MASTER_LOG_FILE='mysql-bin.xxxxxx',
+  MASTER_LOG_POS=xxxx;
+
+# Rozpoczęcie replikacji
+START SLAVE
+
+# Weryfikowanie statusu replikacji
+SHOW SLAVE STATUS\G
+
+# Użycie naszej bazy danych
+use [nazwa bazy, np. car_rental_db]
+
+# Usuwanie
+docker-compose down
