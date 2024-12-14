@@ -10,10 +10,10 @@ Setting up a master-slave database replication involves configuring one database
    - Follow the official Docker installation guide for your operating system: https://docs.docker.com/get-docker/
    - Install Docker Compose: https://docs.docker.com/compose/install/
 
-> [TIP]
-> sudo curl -SL "https://github.com/docker/compose/releases/download/v2.32.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-> sudo chmod +755 /usr/local/bin/docker-compose
-> docker-compose version
+>[TIP]
+>sudo curl -SL "https://github.com/docker/compose/releases/download/v2.32.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+>sudo chmod +755 /usr/local/bin/docker-compose
+>docker-compose version
 
 2. **Create a Docker Compose file**:
    - Create a `docker-compose.yml` file with the following content:
