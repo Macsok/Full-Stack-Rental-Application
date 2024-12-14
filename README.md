@@ -11,9 +11,11 @@ Setting up a master-slave database replication involves configuring one database
 - Install Docker Compose: https://docs.docker.com/compose/install/
 
 > [!TIP]
+> ```sh
 > sudo curl -SL "https://github.com/docker/compose/releases/download/v2.32.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 > sudo chmod +755 /usr/local/bin/docker-compose
 > docker-compose version
+> ```
 
 2. **Create a Docker Compose file**:
     - Create a `docker-compose.yml` file with the following content:
@@ -54,39 +56,39 @@ Setting up a master-slave database replication involves configuring one database
 
 4. **Configure the Master database**:
    - Access the master container:
-     ```sh
-     docker exec -it master mysql -u root -p root_pass
-     ```
+    ```sh
+    docker exec -it master mysql -u root -p root_pass
+    ```
    - Run the following SQL commands to configure the master:
-     ```sql
-     ALTER USER 'replication_user'@'%' IDENTIFIED WITH 'mysql_native_password' BY 'replication_password';
-     GRANT REPLICATION SLAVE ON *.* TO 'replication_user'@'%';
-     FLUSH PRIVILEGES;
-     SHOW MASTER STATUS;
-     ```
+    ```sql
+    ALTER USER 'replication_user'@'%' IDENTIFIED WITH 'mysql_native_password' BY 'replication_password';
+    GRANT REPLICATION SLAVE ON *.* TO 'replication_user'@'%';
+    FLUSH PRIVILEGES;
+    SHOW MASTER STATUS;
+    ```
    - Note the `File` and `Position` values from the `SHOW MASTER STATUS` output.
 
 5. **Configure the Slave database**:
    - Access the slave container:
-     ```sh
-     docker exec -it slave mysql -u root -p root_pass
-     ```
+    ```sh
+    docker exec -it slave mysql -u root -p root_pass
+    ```
    - Run the following SQL commands to configure the slave:
-     ```sql
-     CHANGE MASTER TO
-        MASTER_HOST='mysql-master',
-        MASTER_USER='replication_user',
-        MASTER_PASSWORD='replication_password',
-        MASTER_LOG_FILE='mysql-bin.xxxxxx',
-        MASTER_LOG_POS=xxxx;
-     START SLAVE;
-     ```
+    ```sql
+    CHANGE MASTER TO
+    MASTER_HOST='mysql-master',
+    MASTER_USER='replication_user',
+    MASTER_PASSWORD='replication_password',
+    MASTER_LOG_FILE='mysql-bin.xxxxxx',
+    MASTER_LOG_POS=xxxx;
+    START SLAVE;
+    ```
 
 6. **Verify the replication**:
    - On the slave container, run:
-     ```sql
-     SHOW SLAVE STATUS\G;
-     ```
+    ```sql
+    SHOW SLAVE STATUS\G;
+    ```
    - Ensure that `Slave_IO_Running` and `Slave_SQL_Running` are both `Yes`.
 
 # Read more
