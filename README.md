@@ -92,5 +92,5 @@ docker-compose version
     ```
    - Ensure that `Slave_IO_Running` and `Slave_SQL_Running` are both `Yes`.
 
-# Read more
-- https://dev.to/siddhantkcode/how-to-set-up-a-mysql-master-slave-replication-in-docker-4n0a
+> [!NOTE]
+> You can read more at: https://dev.to/siddhantkcode/how-to-set-up-a-mysql-master-slave-replication-in-docker-4n0a
