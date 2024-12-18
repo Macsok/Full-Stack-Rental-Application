@@ -126,3 +126,6 @@ use [nazwa bazy, np. car_rental_db]
 
 # Usuwanie
 docker-compose down
+
+# Pliki bazy danych
+SELECT @@datadir;
