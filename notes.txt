@@ -1,6 +1,0 @@
-SQL INJECTION PREVENTED (visit site to see in better format):
-$ curl -X 'GET'   'http://localhost:8000/posts/3%20or%201%20=%201'   -H 'accept: application/json'
-
-output:
-{"detail":[{"type":"int_parsing","loc":["path","post_id"],"msg":"Input should be a valid integer, 
-unable to parse string as an integer","input":"3 or 1 = 1"}]}

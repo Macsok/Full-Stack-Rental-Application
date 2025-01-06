@@ -94,3 +94,42 @@ docker-compose version
 
 > [!NOTE]
 > You can read more at: https://dev.to/siddhantkcode/how-to-set-up-a-mysql-master-slave-replication-in-docker-4n0a
+
+## Commands to verify end to end connection on host:
+- Launch MySQL server on host:
+```bash
+cd C:\Program Files\MySQL\MySQL Server 8.0\bin
+mysql.exe -h [virtual machine address] -P [VM port, ex. 3306] -u [username, np. root] -p
+```
+
+- Show available databases:
+```bash
+SHOW DATABASES;
+```
+
+- Choose database:
+```bash
+USE [database name];
+```
+
+- Show database tables:
+```bash
+SHOW TABLES;
+```
+
+# SQL Injection
+SQL Injection prevented (visit site to see in better format):
+```bash
+curl -X 'GET' 'http://localhost:8000/posts/3%20or%201%20=%201' -H 'accept: application/json'
+```
+
+###  Output:
+{"detail":[{"type":"int_parsing","loc":["path","post_id"],"msg":"Input should be a valid integer, 
+unable to parse string as an integer","input":"3 or 1 = 1"}]}
+
+# Side notes
+Column encryption:
+https://serverfault.com/questions/538715/whats-a-good-way-to-encrypt-a-mysql-database-and-is-it-worth-it
+
+master-slave docker:
+https://github.com/vbabak/docker-mysql-master-slave

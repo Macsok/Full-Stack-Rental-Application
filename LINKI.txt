@@ -1,5 +1,0 @@
-szyfrowanie kolumny:
-https://serverfault.com/questions/538715/whats-a-good-way-to-encrypt-a-mysql-database-and-is-it-worth-it
-
-master-slave docker:
-https://github.com/vbabak/docker-mysql-master-slave
