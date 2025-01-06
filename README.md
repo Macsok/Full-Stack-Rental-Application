@@ -99,7 +99,7 @@ docker-compose version
 - Launch MySQL server on host:
 ```bash
 cd C:\Program Files\MySQL\MySQL Server 8.0\bin
-mysql.exe -h [virtual machine address] -P [VM port, ex. 3306] -u [username, np. root] -p
+mysql.exe -h [virtual machine address] -P [VM port, ex. 3306] -u [username, ex. root] -p
 ```
 
 - Show available databases:
@@ -115,6 +115,12 @@ USE [database name];
 - Show database tables:
 ```bash
 SHOW TABLES;
+```
+
+# Running
+Running fastAPI:
+```bash
+uvicorn API_main:app --reload
 ```
 
 # SQL Injection
