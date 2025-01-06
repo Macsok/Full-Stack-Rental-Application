@@ -58,7 +58,7 @@ docker-compose version
 4. **Configure the Master database**:
    - Access the master container:
     ```sh
-    docker exec -it master mysql -u root -p root_pass
+    docker exec -it mysql-master mysql -u root -p
     ```
    - Run the following SQL commands to configure the master:
     ```sql
@@ -72,7 +72,7 @@ docker-compose version
 5. **Configure the Slave database**:
    - Access the slave container:
     ```sh
-    docker exec -it slave mysql -u root -p root_pass
+    docker exec -it mysql-slave mysql -u root -p
     ```
    - Run the following SQL commands to configure the slave:
     ```sql
@@ -131,5 +131,5 @@ unable to parse string as an integer","input":"3 or 1 = 1"}]}
 Column encryption:
 https://serverfault.com/questions/538715/whats-a-good-way-to-encrypt-a-mysql-database-and-is-it-worth-it
 
-master-slave docker:
+master-slave docker automatization:
 https://github.com/vbabak/docker-mysql-master-slave
