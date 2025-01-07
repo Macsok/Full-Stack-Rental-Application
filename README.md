@@ -62,6 +62,9 @@ docker-compose version
     ```
    - Run the following SQL commands to configure the master:
     ```sql
+    CREATE USER 'app_user'@'%' IDENTIFIED BY 'app_pass';
+    GRANT ALL PRIVILEGES ON car_rental_db.* TO 'app_user'@'%';
+    FLUSH PRIVILEGES;
     ALTER USER 'replication_user'@'%' IDENTIFIED WITH 'mysql_native_password' BY 'replication_password';
     GRANT REPLICATION SLAVE ON *.* TO 'replication_user'@'%';
     FLUSH PRIVILEGES;
@@ -92,6 +95,18 @@ docker-compose version
     ```
    - Ensure that `Slave_IO_Running` and `Slave_SQL_Running` are both `Yes`.
 
+7. **Create user to connect from other hosts**:
+   - On the slave container in mysql, run:
+   ```sql
+   CREATE USER 'app_user'@'%' IDENTIFIED BY 'app_pass';
+   GRANT ALL PRIVILEGES ON car_rental_db.* TO 'app_user'@'%';
+   FLUSH PRIVILEGES;
+   ```
+   - Check users:
+   ```sql
+   SELECT user, host, plugin FROM mysql.user;
+   ```
+
 > [!NOTE]
 > You can read more at: https://dev.to/siddhantkcode/how-to-set-up-a-mysql-master-slave-replication-in-docker-4n0a
 
@@ -99,7 +114,7 @@ docker-compose version
 - Launch MySQL server on host:
 ```bash
 cd C:\Program Files\MySQL\MySQL Server 8.0\bin
-mysql.exe -h [virtual machine address] -P [VM port, ex. 3306] -u [username, ex. root] -p
+mysql.exe -h [virtual machine address] -P [VM port, ex. 3306] -u [username, ex. root, replication_user] -p
 ```
 
 - Show available databases:
@@ -127,6 +142,13 @@ uvicorn API_main:app --reload
 SQL Injection prevented (visit site to see in better format):
 ```bash
 curl -X 'GET' 'http://localhost:8000/posts/3%20or%201%20=%201' -H 'accept: application/json'
+```
+
+# Modify Database
+```sql
+CREATE TABLE new_table (
+  ...
+) ENGINE=InnoDB ENCRYPTION='Y'
 ```
 
 ###  Output:
