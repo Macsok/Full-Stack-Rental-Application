@@ -1,6 +1,25 @@
 -- Create tables if they don't exist
+CREATE TABLE IF NOT EXISTS addresses (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    address VARCHAR(50),
+    city VARCHAR(50),
+    country VARCHAR(50)
+);
+
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS locations (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    address_id INTEGER,
+    name VARCHAR(50),
+    FOREIGN KEY (address_id) REFERENCES addresses(id)
+);
+
 CREATE TABLE IF NOT EXISTS cars (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
     brand VARCHAR(50),
     model VARCHAR(50),
     year INTEGER
@@ -16,7 +35,7 @@ CREATE TABLE IF NOT EXISTS car_details (
 );
 
 CREATE TABLE IF NOT EXISTS rentals (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
     car_id INTEGER,
     rental_date DATE,
     return_date DATE,
@@ -29,11 +48,6 @@ CREATE TABLE IF NOT EXISTS rental_details (
     total_price INTEGER,
     FOREIGN KEY (id) REFERENCES rentals(id),
     FOREIGN KEY (customer_id) REFERENCES users(id)
-);
-
-CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username VARCHAR(50) UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS user_details (
@@ -53,22 +67,8 @@ CREATE TABLE IF NOT EXISTS passwords (
     FOREIGN KEY (id) REFERENCES users(id)
 );
 
-CREATE TABLE IF NOT EXISTS locations (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    address_id INTEGER,
-    name VARCHAR(50),
-    FOREIGN KEY (address_id) REFERENCES addresses(id)
-);
-
-CREATE TABLE IF NOT EXISTS addresses (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    address VARCHAR(50),
-    city VARCHAR(50),
-    country VARCHAR(50)
-);
-
 CREATE TABLE IF NOT EXISTS payments (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
     rental_id INTEGER,
     FOREIGN KEY (rental_id) REFERENCES rentals(id)
 );
