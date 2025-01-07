@@ -107,6 +107,40 @@ docker-compose version
    SELECT user, host, plugin FROM mysql.user;
    ```
 
+8. **Run auto backup creation**:
+   - First create new directory:
+   ```bash
+   mkdir backups
+   ```
+   - Create new script named auto_backup.sh:
+   ```bash
+   #!/bin/bash
+
+    perform_task() {
+        docker exec mysql-master mysqldump -u root -proot_pass car_rental_db > backups/db_backup_$( date +"%Y_%m_%d_%H:%M:%S" ).sql
+    }
+
+    main() {
+        while true; do
+            perform_task
+            sleep 60
+        done
+    }
+
+    main &
+   ```
+   
+   - Modify premission to make it executable and run:
+   ```bash
+   chmod +x auto_backup.sh
+   ./auto_backup.sh
+   ```
+
+   - To kill the process use `ps` to find PID and then:
+   ```bash
+   kill [PID]
+   ```
+
 > [!NOTE]
 > You can read more at: https://dev.to/siddhantkcode/how-to-set-up-a-mysql-master-slave-replication-in-docker-4n0a
 
