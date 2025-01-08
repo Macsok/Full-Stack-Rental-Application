@@ -6,4 +6,5 @@ uvicorn==0.32.1
 SQLAlchemy==2.0.36
 PyMySQL==1.1.1
 fastapi==0.115.5
+cryptography==44.0.0
 # pylint==3.3.1   # Only to generate UML diagrams

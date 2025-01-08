@@ -193,5 +193,8 @@ unable to parse string as an integer","input":"3 or 1 = 1"}]}
 Column encryption:
 https://serverfault.com/questions/538715/whats-a-good-way-to-encrypt-a-mysql-database-and-is-it-worth-it
 
-master-slave docker automatization:
+Table encryption:
+https://datachild.net/data/enabling-data-at-rest-encryption-in-mysql
+
+Master-slave docker automatization:
 https://github.com/vbabak/docker-mysql-master-slave
