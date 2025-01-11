@@ -4,26 +4,26 @@ CREATE TABLE IF NOT EXISTS addresses (
     address VARCHAR(50),
     city VARCHAR(50),
     country VARCHAR(50)
-);
+) ENGINE=InnoDB ENCRYPTION='Y';
 
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(50) UNIQUE
-);
+) ENGINE=InnoDB ENCRYPTION='Y';
 
 CREATE TABLE IF NOT EXISTS locations (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     address_id INTEGER,
     name VARCHAR(50),
     FOREIGN KEY (address_id) REFERENCES addresses(id)
-);
+) ENGINE=InnoDB ENCRYPTION='Y';
 
 CREATE TABLE IF NOT EXISTS cars (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     brand VARCHAR(50),
     model VARCHAR(50),
     year INTEGER
-);
+) ENGINE=InnoDB ENCRYPTION='Y';
 
 CREATE TABLE IF NOT EXISTS car_details (
     id INTEGER PRIMARY KEY,
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS car_details (
     horse_power INTEGER,
     FOREIGN KEY (id) REFERENCES cars(id),
     FOREIGN KEY (location_id) REFERENCES locations(id)
-);
+) ENGINE=InnoDB ENCRYPTION='Y';
 
 CREATE TABLE IF NOT EXISTS rentals (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS rentals (
     rental_date DATE,
     return_date DATE,
     FOREIGN KEY (car_id) REFERENCES cars(id)
-);
+) ENGINE=InnoDB ENCRYPTION='Y';
 
 CREATE TABLE IF NOT EXISTS rental_details (
     id INTEGER PRIMARY KEY,
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS rental_details (
     total_price INTEGER,
     FOREIGN KEY (id) REFERENCES rentals(id),
     FOREIGN KEY (customer_id) REFERENCES users(id)
-);
+) ENGINE=InnoDB ENCRYPTION='Y';
 
 CREATE TABLE IF NOT EXISTS user_details (
     id INTEGER PRIMARY KEY,
@@ -59,19 +59,19 @@ CREATE TABLE IF NOT EXISTS user_details (
     phone VARCHAR(50),
     FOREIGN KEY (id) REFERENCES users(id),
     FOREIGN KEY (address_id) REFERENCES addresses(id)
-);
+) ENGINE=InnoDB ENCRYPTION='Y';
 
 CREATE TABLE IF NOT EXISTS passwords (
     id INTEGER PRIMARY KEY,
     password VARCHAR(50),
     FOREIGN KEY (id) REFERENCES users(id)
-);
+) ENGINE=InnoDB ENCRYPTION='Y';
 
 CREATE TABLE IF NOT EXISTS payments (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     rental_id INTEGER,
     FOREIGN KEY (rental_id) REFERENCES rentals(id)
-);
+) ENGINE=InnoDB ENCRYPTION='Y';
 
 CREATE TABLE IF NOT EXISTS payment_details (
     id INTEGER PRIMARY KEY,
@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS payment_details (
     payment_date DATE,
     FOREIGN KEY (id) REFERENCES payments(id),
     FOREIGN KEY (user_id) REFERENCES users(id)
-);
+) ENGINE=InnoDB ENCRYPTION='Y';
 
 -- Insert exemplary data
 INSERT INTO cars (brand, model, year) VALUES ('Toyota', 'Corolla', 2020);
