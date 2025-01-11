@@ -8,11 +8,11 @@ IP = '192.168.56.102'
 # Database URLs
 # TO DO:
 # make changes on master not replication_user
-URL_DATABASE_MASTER = 'mysql+pymysql://app_user:app_pass@' + IP + ':3306/car_rental_db'
-URL_DATABASE_SLAVE = 'mysql+pymysql://app_user:app_pass@' + IP + ':3307/car_rental_db'
+URL_DATABASE_MASTER = 'mysql+mysqlconnector://app_user:app_pass@' + IP + ':3306/car_rental_db'
+URL_DATABASE_SLAVE = 'mysql+mysqlconnector://app_user:app_pass@' + IP + ':3307/car_rental_db'
 
 # Engines
-engine_master = create_engine(URL_DATABASE_MASTER)
+engine_master = create_engine(URL_DATABASE_MASTER, connect_args={"ssl_disabled": False, "ssl_cert": None, "ssl_ca": None, "ssl_key": None})
 engine_slave = create_engine(URL_DATABASE_SLAVE)
 
 # Sessions
