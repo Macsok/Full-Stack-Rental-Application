@@ -1,10 +1,10 @@
 Wymagania:
 
 1 System składa się z aplikacji w przeglądarce + API, które komunikuje się z bazą danych.
-2 Komunikacja API z bazą odbywa się przez połączenie szyfrowane
++ 2 Komunikacja API z bazą odbywa się przez połączenie szyfrowane
 + 3 W aplikacji stosowane są techniki zabezpieczające przed atakiem SQL injection
-4 System realizuje backup bazy danych 1x dziennie
-5 Dane w bazie są szyfrowane przy pomocy klucza
++ 4 System realizuje backup bazy danych 1x dziennie
++ 5 Dane w bazie są szyfrowane przy pomocy klucza
 + 6 Baza danych działa w trybie replikacji Master-Slave
 + 7 Zapytania SELECT realizowane są w replice (Slave) a INSERT/UPDATE w Master
 
