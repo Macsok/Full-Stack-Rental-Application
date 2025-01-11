@@ -4,7 +4,7 @@ to be completed...
 # Setting up Master-Slave database
 Setting up a master-slave database replication involves configuring one database server (the master) to replicate its data to other database servers (in this case single slave). This setup is useful for load balancing, data redundancy, and backup purposes. Below are the steps to set up master-slave replication using Docker and Docker Compose.
 
-## Instructions to enable and run master-slave replication on a virtual machine
+# Instructions to enable and run master-slave replication on a virtual machine
 
 1. **Install Docker and Docker Compose**:
 - Follow the official Docker installation guide for your operating system: https://docs.docker.com/get-docker/
@@ -148,10 +148,7 @@ services:
    kill [PID]
    ```
 
-> [!NOTE]
-> You can read more at: https://dev.to/siddhantkcode/how-to-set-up-a-mysql-master-slave-replication-in-docker-4n0a
-
-## Commands to verify end to end connection on host:
+9. **Commands to verify end-to-end connection on host**:
 - Launch MySQL server on host:
 ```bash
 cd C:\Program Files\MySQL\MySQL Server 8.0\bin
@@ -206,6 +203,9 @@ https://serverfault.com/questions/538715/whats-a-good-way-to-encrypt-a-mysql-dat
 
 Table encryption:
 https://datachild.net/data/enabling-data-at-rest-encryption-in-mysql
+
+Master-slave replication:
+https://dev.to/siddhantkcode/how-to-set-up-a-mysql-master-slave-replication-in-docker-4n0a
 
 Master-slave docker automatization:
 https://github.com/vbabak/docker-mysql-master-slave
