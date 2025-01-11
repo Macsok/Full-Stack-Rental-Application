@@ -12,42 +12,49 @@ Setting up a master-slave database replication involves configuring one database
 
 > [!TIP]
 > The following commands will download the Docker Compose binary, make it executable, and verify the installation:
-```sh
-sudo curl -SL "https://github.com/docker/compose/releases/download/v2.32.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +755 /usr/local/bin/docker-compose
-docker-compose version
-```
+
+    ```sh
+    sudo curl -SL "https://github.com/docker/compose/releases/download/v2.32.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    sudo chmod +755 /usr/local/bin/docker-compose
+    docker-compose version
+    ```
 
 2. **Create a Docker Compose file**:
     - Create a `docker-compose.yml` file with the following content:
-    ```yaml
-    services:
-    mysql-master:
-        image: mysql:8.0
-        container_name: mysql-master
-        command: --server-id=1 --log-bin=mysql-bin --binlog-format=row
-        environment:
-        MYSQL_ROOT_PASSWORD: root_pass
-        MYSQL_DATABASE: car_rental_db
-        MYSQL_USER: replication_user
-        MYSQL_PASSWORD: user_pass
-        ports:
-        - "3306:3306"
+```yaml
+services:
+  mysql-master:
+    image: mysql/mysql-server:8.0
+    container_name: mysql-master
+    command: --server-id=1 --log-bin=mysql-bin --binlog-format=row --early-plugin-load=keyring_file.so
+    environment:
+      MYSQL_ROOT_PASSWORD: root_pass
+      MYSQL_DATABASE: car_rental_db
+      MYSQL_USER: replication_user
+      MYSQL_PASSWORD: user_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./data/mysql-master:/var/lib/mysql
+      - ./keyring/master:/var/lib/mysql-keyring
 
-    mysql-slave:
-        image: mysql:8.0
-        container_name: mysql-slave
-        depends_on:
-        - mysql-master
-        command: --server-id=2 --log-bin=mysql-bin --binlog-format=row
-        environment:
-        MYSQL_ROOT_PASSWORD: root_pass
-        MYSQL_DATABASE: car_rental_db
-        MYSQL_USER: replication_user
-        MYSQL_PASSWORD: user_pass
-        ports:
-        - "3307:3306"
-    ```
+  mysql-slave:
+    image: mysql/mysql-server:8.0
+    container_name: mysql-slave
+    depends_on:
+      - mysql-master
+    command: --server-id=2 --log-bin=mysql-bin --binlog-format=row --early-plugin-load=keyring_file.so
+    environment:
+      MYSQL_ROOT_PASSWORD: root_pass
+      MYSQL_DATABASE: car_rental_db
+      MYSQL_USER: replication_user
+      MYSQL_PASSWORD: user_pass
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./data/mysql-slave:/var/lib/mysql
+      - ./keyring/slave:/var/lib/mysql-keyring
+```
 
 3. **Start the Docker containers**:
    - Run the following command to start the containers:
@@ -173,21 +180,25 @@ uvicorn API_main:app --reload
 ```
 
 # SQL Injection
-SQL Injection prevented (visit site to see in better format):
+SQL Injection prevented (visit http://localhost:8000/docs# to see in better format). The bash command below is equivalent to typing `' or '1'='1` in brand parameter. 
 ```bash
-curl -X 'GET' 'http://localhost:8000/posts/3%20or%201%20=%201' -H 'accept: application/json'
+curl -X 'GET' 'http://localhost:8000/api/v1/cars_vulnerable?brand=%27%20or%20%271%27%3D%271' -H 'accept: application/json'
 ```
+This should return list of all the cars in the database.
 
 # Modify Database
+To create new encrypted column, run:
 ```sql
 CREATE TABLE new_table (
   ...
-) ENGINE=InnoDB ENCRYPTION='Y'
+) ENGINE=InnoDB ENCRYPTION='Y';
 ```
-
-###  Output:
-{"detail":[{"type":"int_parsing","loc":["path","post_id"],"msg":"Input should be a valid integer, 
-unable to parse string as an integer","input":"3 or 1 = 1"}]}
+To check whether table is encrypted, run:
+```sql
+SELECT TABLE_SCHEMA, TABLE_NAME, CREATE_OPTIONS 
+FROM INFORMATION_SCHEMA.TABLES;
+```
+You can specify one table by adding `WHERE TABLE_NAME = '[your_table]';`
 
 # Side notes
 Column encryption:
