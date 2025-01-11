@@ -12,7 +12,6 @@ Setting up a master-slave database replication involves configuring one database
 
 > [!TIP]
 > The following commands will download the Docker Compose binary, make it executable, and verify the installation:
-
     ```sh
     sudo curl -SL "https://github.com/docker/compose/releases/download/v2.32.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
     sudo chmod +755 /usr/local/bin/docker-compose
@@ -149,26 +148,26 @@ services:
    ```
 
 9. **Commands to verify end-to-end connection on host**:
-- Launch MySQL server on host:
-```bash
-cd C:\Program Files\MySQL\MySQL Server 8.0\bin
-mysql.exe -h [virtual machine address] -P [VM port, ex. 3306] -u [username, ex. root, replication_user] -p
-```
+  - Launch MySQL server on host:
+  ```bash
+  cd C:\Program Files\MySQL\MySQL Server 8.0\bin
+  mysql.exe -h [virtual machine address] -P [VM port, ex. 3306] -u [username, ex. root, replication_user] -p
+  ```
 
-- Show available databases:
-```bash
-SHOW DATABASES;
-```
+  - Show available databases:
+  ```bash
+  SHOW DATABASES;
+  ```
 
-- Choose database:
-```bash
-USE [database name];
-```
+  - Choose database:
+  ```bash
+  USE [database name];
+  ```
 
-- Show database tables:
-```bash
-SHOW TABLES;
-```
+  - Show database tables:
+  ```bash
+  SHOW TABLES;
+  ```
 
 # Running
 Running fastAPI:
@@ -209,3 +208,6 @@ https://dev.to/siddhantkcode/how-to-set-up-a-mysql-master-slave-replication-in-d
 
 Master-slave docker automatization:
 https://github.com/vbabak/docker-mysql-master-slave
+
+SSL connection:
+https://peterkellner.net/2023/08/02/Enforcing-SSL-Connections-in-MySql-Using-Docker/
