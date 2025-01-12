@@ -149,26 +149,26 @@ services:
    ```
 
 9. **Commands to verify end-to-end connection on host**:
-  - Launch MySQL server on host:
-  ```bash
-  cd C:\Program Files\MySQL\MySQL Server 8.0\bin
-  mysql.exe -h [virtual machine address] -P [VM port, ex. 3306] -u [username, ex. root, replication_user] -p
-  ```
+    - Launch MySQL server on host:
+    ```bash
+    cd C:\Program Files\MySQL\MySQL Server 8.0\bin
+    mysql.exe -h [virtual machine address] -P [VM port, ex. 3306] -u [username, ex. root, replication_user] -p
+    ```
 
-  - Show available databases:
-  ```bash
-  SHOW DATABASES;
-  ```
+    - Show available databases:
+    ```bash
+    SHOW DATABASES;
+    ```
 
-  - Choose database:
-  ```bash
-  USE [database name];
-  ```
+    - Choose database:
+    ```bash
+    USE [database name];
+    ```
 
-  - Show database tables:
-  ```bash
-  SHOW TABLES;
-  ```
+    - Show database tables:
+    ```bash
+    SHOW TABLES;
+    ```
 
 # Running
 Running fastAPI:
@@ -196,6 +196,12 @@ SELECT TABLE_SCHEMA, TABLE_NAME, CREATE_OPTIONS
 FROM INFORMATION_SCHEMA.TABLES;
 ```
 You can specify one table by adding `WHERE TABLE_NAME = '[your_table]';`
+
+To restart database you can use:
+```sql
+DROP DATABASE car_rental_db;
+CREATE DATABASE car_rental_db;
+```
 
 # Side notes
 Column encryption:
