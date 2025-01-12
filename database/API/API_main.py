@@ -12,6 +12,7 @@ from sqlalchemy import text
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine_master)
 
+# Sessions management
 def get_db_master():
     db = SessionLocal_Master()
     try:
@@ -29,6 +30,8 @@ def get_db_slave():
 db_master_dependency = Annotated[Session, Depends(get_db_master)]
 db_slave_dependency = Annotated[Session, Depends(get_db_slave)]
 
+
+#------------------------- API Endpoints on Slave Database -------------------------#
 @app.get("/api/v1/cars_vulnerable", status_code=status.HTTP_200_OK)
 # This endpoint is vulnerable to SQL Injection
 async def read_cars_vulnerable(
@@ -51,11 +54,7 @@ async def read_cars_vulnerable(
         raise HTTPException(status_code=404, detail='Car was not found')
     return [dict(car._mapping) for car in query]
 
-@app.post("/api/v1/cars", status_code=status.HTTP_201_CREATED)
-async def create_car(car: CarBase, db: db_master_dependency):
-    new_data = models.Car(**car.dict())
-    db.add(new_data)
-    db.commit()
+
 
 @app.get("/api/v1/cars", status_code=status.HTTP_200_OK)
 async def read_cars(
@@ -79,8 +78,17 @@ async def read_cars(
         raise HTTPException(status_code=404, detail='Car was not found')
     return cars
 
+
+#------------------------- API Endpoints on Master Database -------------------------#
 @app.post("/api/v1/rentals", status_code=status.HTTP_201_CREATED)
 async def create_rental(car: RentalBase, db: db_master_dependency):
     new_data = models.Rental(**car.dict())
+    db.add(new_data)
+    db.commit()
+
+
+@app.post("/api/v1/cars", status_code=status.HTTP_201_CREATED)
+async def create_car(car: CarBase, db: db_master_dependency):
+    new_data = models.Car(**car.dict())
     db.add(new_data)
     db.commit()

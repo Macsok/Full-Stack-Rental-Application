@@ -1,58 +1,50 @@
 from flask import Flask, render_template, request, redirect, url_for
-import mysql.connector
-from database.db_connection import get_db_connection
+import httpx
+
 
 app = Flask(__name__)
 
+
+def initialize():
+    app.run(debug=True)
+
+
+#------------------------- Web Endpoints -------------------------#
 @app.route('/')
 def index():
     return render_template('index.html')
 
 @app.route('/cars')
-def cars():
-    connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM cars WHERE available = TRUE")
-    available_cars = cursor.fetchall()
-    cursor.close()
-    connection.close()
+async def cars():
+    async with httpx.AsyncClient() as client:
+        response = await client.get("http://localhost:8000/api/v1/cars")
+        response.raise_for_status()
+        available_cars = response.json()
     return render_template('cars.html', cars=available_cars)
 
 @app.route('/rental/<int:car_id>', methods=['GET', 'POST'])
-def rental(car_id):
+async def rental(car_id):
     if request.method == 'POST':
         customer_name = request.form['customer_name']
         rental_date = request.form['rental_date']
         return_date = request.form['return_date']
         
-        
-        connection = get_db_connection()
-        cursor = connection.cursor()
-        cursor.execute("INSERT INTO rentals (car_id, customer_name, rental_date, return_date, total_price) "
-                       "VALUES (%s, %s, %s, %s, %s)",
-                       (car_id, customer_name, rental_date, return_date, 100.00))  # Cena na stałe 100 PLN
-        connection.commit()
-        cursor.close()
-        connection.close()
-
-        
-        connection = get_db_connection()
-        cursor = connection.cursor()
-        cursor.execute("UPDATE cars SET available = FALSE WHERE id = %s", (car_id,))
-        connection.commit()
-        cursor.close()
-        connection.close()
+        async with httpx.AsyncClient() as client:
+            rental_data = {
+                "car_id": car_id,
+                "customer_name": customer_name,
+                "rental_date": rental_date,
+                "return_date": return_date,
+                "total_price": 100.00  # Cena na stałe 100 PLN
+            }
+            response = await client.post("http://localhost:8000/api/v1/rentals", json=rental_data)
+            response.raise_for_status()
 
         return redirect(url_for('cars'))
 
-    connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM cars WHERE id = %s", (car_id,))
-    car = cursor.fetchone()
-    cursor.close()
-    connection.close()
+    async with httpx.AsyncClient() as client:
+        response = await client.get(f"http://localhost:8000/api/v1/cars?car_id={car_id}")
+        response.raise_for_status()
+        car = response.json()[0]
 
     return render_template('rental.html', car=car)
-
-def initialize():
-    app.run(debug=True)
