@@ -85,38 +85,16 @@ CREATE TABLE IF NOT EXISTS payment_details (
 ) ENGINE=InnoDB ENCRYPTION='Y';
 
 -- Insert exemplary data
-INSERT INTO cars (brand, model, year) VALUES ('Toyota', 'Corolla', 2020);
-INSERT INTO cars (brand, model, year) VALUES ('Honda', 'Civic', 2019);
-INSERT INTO cars (brand, model, year) VALUES ('Ford', 'Focus', 2018);
-INSERT INTO cars (brand, model, year) VALUES ('Chevrolet', 'Malibu', 2017);
-INSERT INTO cars (brand, model, year) VALUES ('Nissan', 'Altima', 2021);
-INSERT INTO cars (brand, model, year) VALUES ('BMW', '3 Series', 2020);
-INSERT INTO cars (brand, model, year) VALUES ('Audi', 'A4', 2019);
-INSERT INTO cars (brand, model, year) VALUES ('Mercedes', 'C-Class', 2018);
-INSERT INTO cars (brand, model, year) VALUES ('Volkswagen', 'Passat', 2017);
-INSERT INTO cars (brand, model, year) VALUES ('Hyundai', 'Elantra', 2021);
-
-INSERT INTO locations (address_id, name) VALUES (1, 'Downtown');
-INSERT INTO locations (address_id, name) VALUES (2, 'Airport');
-INSERT INTO locations (address_id, name) VALUES (3, 'Suburbs');
-INSERT INTO locations (address_id, name) VALUES (4, 'City Center');
-INSERT INTO locations (address_id, name) VALUES (5, 'Train Station');
-INSERT INTO locations (address_id, name) VALUES (6, 'Bus Station');
-INSERT INTO locations (address_id, name) VALUES (7, 'Mall');
-INSERT INTO locations (address_id, name) VALUES (8, 'Hotel');
-INSERT INTO locations (address_id, name) VALUES (9, 'University');
-INSERT INTO locations (address_id, name) VALUES (10, 'Park');
-
-INSERT INTO car_details (id, location_id, price_per_day, horse_power) VALUES (1, 1, 50, 150);
-INSERT INTO car_details (id, location_id, price_per_day, horse_power) VALUES (2, 2, 60, 160);
-INSERT INTO car_details (id, location_id, price_per_day, horse_power) VALUES (3, 3, 55, 140);
-INSERT INTO car_details (id, location_id, price_per_day, horse_power) VALUES (4, 4, 65, 170);
-INSERT INTO car_details (id, location_id, price_per_day, horse_power) VALUES (5, 5, 70, 180);
-INSERT INTO car_details (id, location_id, price_per_day, horse_power) VALUES (6, 6, 75, 190);
-INSERT INTO car_details (id, location_id, price_per_day, horse_power) VALUES (7, 7, 80, 200);
-INSERT INTO car_details (id, location_id, price_per_day, horse_power) VALUES (8, 8, 85, 210);
-INSERT INTO car_details (id, location_id, price_per_day, horse_power) VALUES (9, 9, 90, 220);
-INSERT INTO car_details (id, location_id, price_per_day, horse_power) VALUES (10, 10, 95, 230);
+INSERT INTO addresses (address, city, country) VALUES ('123 Main St', 'New York', 'USA');
+INSERT INTO addresses (address, city, country) VALUES ('456 Elm St', 'Los Angeles', 'USA');
+INSERT INTO addresses (address, city, country) VALUES ('789 Oak St', 'Chicago', 'USA');
+INSERT INTO addresses (address, city, country) VALUES ('101 Pine St', 'Houston', 'USA');
+INSERT INTO addresses (address, city, country) VALUES ('202 Maple St', 'Phoenix', 'USA');
+INSERT INTO addresses (address, city, country) VALUES ('303 Cedar St', 'Philadelphia', 'USA');
+INSERT INTO addresses (address, city, country) VALUES ('404 Birch St', 'San Antonio', 'USA');
+INSERT INTO addresses (address, city, country) VALUES ('505 Walnut St', 'San Diego', 'USA');
+INSERT INTO addresses (address, city, country) VALUES ('606 Cherry St', 'Dallas', 'USA');
+INSERT INTO addresses (address, city, country) VALUES ('707 Ash St', 'San Jose', 'USA');
 
 INSERT INTO users (username) VALUES ('john_doe');
 INSERT INTO users (username) VALUES ('jane_doe');
@@ -129,27 +107,38 @@ INSERT INTO users (username) VALUES ('frank_wilson');
 INSERT INTO users (username) VALUES ('grace_lee');
 INSERT INTO users (username) VALUES ('henry_taylor');
 
-INSERT INTO user_details (id, address_id, is_active, role, email, phone) VALUES (1, 1, TRUE, 'customer', 'john@example.com', '123456789');
-INSERT INTO user_details (id, address_id, is_active, role, email, phone) VALUES (2, 2, TRUE, 'customer', 'jane@example.com', '987654321');
-INSERT INTO user_details (id, address_id, is_active, role, email, phone) VALUES (3, 3, TRUE, 'customer', 'alice@example.com', '234567890');
-INSERT INTO user_details (id, address_id, is_active, role, email, phone) VALUES (4, 4, TRUE, 'customer', 'bob@example.com', '345678901');
-INSERT INTO user_details (id, address_id, is_active, role, email, phone) VALUES (5, 5, TRUE, 'customer', 'charlie@example.com', '456789012');
-INSERT INTO user_details (id, address_id, is_active, role, email, phone) VALUES (6, 6, TRUE, 'customer', 'david@example.com', '567890123');
-INSERT INTO user_details (id, address_id, is_active, role, email, phone) VALUES (7, 7, TRUE, 'customer', 'eve@example.com', '678901234');
-INSERT INTO user_details (id, address_id, is_active, role, email, phone) VALUES (8, 8, TRUE, 'customer', 'frank@example.com', '789012345');
-INSERT INTO user_details (id, address_id, is_active, role, email, phone) VALUES (9, 9, TRUE, 'customer', 'grace@example.com', '890123456');
-INSERT INTO user_details (id, address_id, is_active, role, email, phone) VALUES (10, 10, TRUE, 'customer', 'henry@example.com', '901234567');
+INSERT INTO locations (address_id, name) VALUES (1, 'Downtown');
+INSERT INTO locations (address_id, name) VALUES (2, 'Airport');
+INSERT INTO locations (address_id, name) VALUES (3, 'Suburbs');
+INSERT INTO locations (address_id, name) VALUES (4, 'City Center');
+INSERT INTO locations (address_id, name) VALUES (5, 'Train Station');
+INSERT INTO locations (address_id, name) VALUES (6, 'Bus Station');
+INSERT INTO locations (address_id, name) VALUES (7, 'Mall');
+INSERT INTO locations (address_id, name) VALUES (8, 'Hotel');
+INSERT INTO locations (address_id, name) VALUES (9, 'University');
+INSERT INTO locations (address_id, name) VALUES (10, 'Park');
 
-INSERT INTO addresses (address, city, country) VALUES ('123 Main St', 'New York', 'USA');
-INSERT INTO addresses (address, city, country) VALUES ('456 Elm St', 'Los Angeles', 'USA');
-INSERT INTO addresses (address, city, country) VALUES ('789 Oak St', 'Chicago', 'USA');
-INSERT INTO addresses (address, city, country) VALUES ('101 Pine St', 'Houston', 'USA');
-INSERT INTO addresses (address, city, country) VALUES ('202 Maple St', 'Phoenix', 'USA');
-INSERT INTO addresses (address, city, country) VALUES ('303 Cedar St', 'Philadelphia', 'USA');
-INSERT INTO addresses (address, city, country) VALUES ('404 Birch St', 'San Antonio', 'USA');
-INSERT INTO addresses (address, city, country) VALUES ('505 Walnut St', 'San Diego', 'USA');
-INSERT INTO addresses (address, city, country) VALUES ('606 Cherry St', 'Dallas', 'USA');
-INSERT INTO addresses (address, city, country) VALUES ('707 Ash St', 'San Jose', 'USA');
+INSERT INTO cars (brand, model, year) VALUES ('Toyota', 'Corolla', 2020);
+INSERT INTO cars (brand, model, year) VALUES ('Honda', 'Civic', 2019);
+INSERT INTO cars (brand, model, year) VALUES ('Ford', 'Focus', 2018);
+INSERT INTO cars (brand, model, year) VALUES ('Chevrolet', 'Malibu', 2017);
+INSERT INTO cars (brand, model, year) VALUES ('Nissan', 'Altima', 2021);
+INSERT INTO cars (brand, model, year) VALUES ('BMW', '3 Series', 2020);
+INSERT INTO cars (brand, model, year) VALUES ('Audi', 'A4', 2019);
+INSERT INTO cars (brand, model, year) VALUES ('Mercedes', 'C-Class', 2018);
+INSERT INTO cars (brand, model, year) VALUES ('Volkswagen', 'Passat', 2017);
+INSERT INTO cars (brand, model, year) VALUES ('Hyundai', 'Elantra', 2021);
+
+INSERT INTO car_details (id, location_id, price_per_day, horse_power) VALUES (1, 1, 50, 150);
+INSERT INTO car_details (id, location_id, price_per_day, horse_power) VALUES (2, 2, 60, 160);
+INSERT INTO car_details (id, location_id, price_per_day, horse_power) VALUES (3, 3, 55, 140);
+INSERT INTO car_details (id, location_id, price_per_day, horse_power) VALUES (4, 4, 65, 170);
+INSERT INTO car_details (id, location_id, price_per_day, horse_power) VALUES (5, 5, 70, 180);
+INSERT INTO car_details (id, location_id, price_per_day, horse_power) VALUES (6, 6, 75, 190);
+INSERT INTO car_details (id, location_id, price_per_day, horse_power) VALUES (7, 7, 80, 200);
+INSERT INTO car_details (id, location_id, price_per_day, horse_power) VALUES (8, 8, 85, 210);
+INSERT INTO car_details (id, location_id, price_per_day, horse_power) VALUES (9, 9, 90, 220);
+INSERT INTO car_details (id, location_id, price_per_day, horse_power) VALUES (10, 10, 95, 230);
 
 INSERT INTO rentals (car_id, rental_date, return_date) VALUES (1, '2023-01-01', '2023-01-10');
 INSERT INTO rentals (car_id, rental_date, return_date) VALUES (2, '2023-02-01', '2023-02-10');
@@ -172,6 +161,17 @@ INSERT INTO rental_details (id, customer_id, total_price) VALUES (7, 7, 800);
 INSERT INTO rental_details (id, customer_id, total_price) VALUES (8, 8, 850);
 INSERT INTO rental_details (id, customer_id, total_price) VALUES (9, 9, 900);
 INSERT INTO rental_details (id, customer_id, total_price) VALUES (10, 10, 950);
+
+INSERT INTO user_details (id, address_id, is_active, role, email, phone) VALUES (1, 1, TRUE, 'customer', 'john@example.com', '123456789');
+INSERT INTO user_details (id, address_id, is_active, role, email, phone) VALUES (2, 2, TRUE, 'customer', 'jane@example.com', '987654321');
+INSERT INTO user_details (id, address_id, is_active, role, email, phone) VALUES (3, 3, TRUE, 'customer', 'alice@example.com', '234567890');
+INSERT INTO user_details (id, address_id, is_active, role, email, phone) VALUES (4, 4, TRUE, 'customer', 'bob@example.com', '345678901');
+INSERT INTO user_details (id, address_id, is_active, role, email, phone) VALUES (5, 5, TRUE, 'customer', 'charlie@example.com', '456789012');
+INSERT INTO user_details (id, address_id, is_active, role, email, phone) VALUES (6, 6, TRUE, 'customer', 'david@example.com', '567890123');
+INSERT INTO user_details (id, address_id, is_active, role, email, phone) VALUES (7, 7, TRUE, 'customer', 'eve@example.com', '678901234');
+INSERT INTO user_details (id, address_id, is_active, role, email, phone) VALUES (8, 8, TRUE, 'customer', 'frank@example.com', '789012345');
+INSERT INTO user_details (id, address_id, is_active, role, email, phone) VALUES (9, 9, TRUE, 'customer', 'grace@example.com', '890123456');
+INSERT INTO user_details (id, address_id, is_active, role, email, phone) VALUES (10, 10, TRUE, 'customer', 'henry@example.com', '901234567');
 
 INSERT INTO passwords (id, password) VALUES (1, 'password123');
 INSERT INTO passwords (id, password) VALUES (2, 'password456');
