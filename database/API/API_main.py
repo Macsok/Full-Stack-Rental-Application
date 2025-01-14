@@ -6,6 +6,7 @@ from bases import *
 from database_connection import engine_master, engine_slave, SessionLocal_Master, SessionLocal_Slave
 from sqlalchemy.orm import Session
 from sqlalchemy import text
+import hashlib
 
 # To test API visit http://localhost:8000/docs#
 
@@ -110,6 +111,19 @@ async def read_users(
     if not users:
         raise HTTPException(status_code=404, detail='Users not found')
     return users
+
+@app.get("/api/v1/passwords", status_code=status.HTTP_200_OK)
+async def read_passwords(
+    db: db_slave_dependency,
+    user_id: int = None
+):
+    query = db.query(models.Password)
+    if user_id:
+        query = query.filter(models.Password.user_id == user_id)
+    passwords = query.all()
+    if not passwords:
+        raise HTTPException(status_code=404, detail='Passwords not found')
+    return passwords
 
 @app.get("/api/v1/rentals", status_code=status.HTTP_200_OK)
 async def read_rentals(
@@ -265,6 +279,11 @@ async def read_payment_details(
         raise HTTPException(status_code=404, detail='Payment details not found')
     return payment_details
 
+
+#------------------------- Functions on Slave Database ------------------------------#
+#...
+
+
 #------------------------- API Endpoints on Master Database -------------------------#
 @app.post("/api/v1/rentals", status_code=status.HTTP_201_CREATED)
 async def create_rental(rental: RentalBase, db: db_master_dependency):
@@ -323,5 +342,13 @@ async def create_payment(payment: PaymentBase, db: db_master_dependency):
 @app.post("/api/v1/payment_details", status_code=status.HTTP_201_CREATED)
 async def create_payment_detail(payment_detail: PaymentDetailsBase, db: db_master_dependency):
     new_data = models.PaymentDetails(**payment_detail.dict())
+    db.add(new_data)
+    db.commit()
+
+@app.post("/api/v1/passwords", status_code=status.HTTP_201_CREATED)
+async def create_password(password: PasswordBase, db: db_master_dependency):
+    hashed = hashlib.sha512(password.password.encode()).hexdigest()
+    password.password = hashed[:50]
+    new_data = models.Password(**password.dict())
     db.add(new_data)
     db.commit()

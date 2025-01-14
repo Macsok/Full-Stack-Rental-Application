@@ -37,7 +37,8 @@
             {% if session.get('token') %}
                 <a href="{{ url_for('logout') }}">Wyloguj</a>
             {% else %}
-                <a href="{{ url_for('login') }}">Zaloguj</a>
+                <a href="{{ url_for('login') }}">Zaloguj</a> |
+                <a href="{{ url_for('register') }}">Zarejestruj</a>
             {% endif %}
         </nav>
     </header>
