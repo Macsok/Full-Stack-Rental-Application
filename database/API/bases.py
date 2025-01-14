@@ -18,17 +18,20 @@ class RentalBase(BaseModel):
 
 
 class CarDetailsBase(BaseModel):
+    car_id: int
     location_id: int
     price_per_day: int
     horse_power: int
 
 
 class RentalDetailsBase(BaseModel):
+    rental_id: int
     customer_id: int
     total_price: int
 
 
 class UserDetailBase(BaseModel):
+    user_id: int
     address_id: int
     is_active: bool
     role: str
@@ -37,6 +40,7 @@ class UserDetailBase(BaseModel):
 
 
 class PasswordBase(BaseModel):
+    user_id: int
     password: str
 
 
@@ -56,6 +60,7 @@ class PaymentBase(BaseModel):
 
 
 class PaymentDetailsBase(BaseModel):
+    payment_id: int
     user_id: int
     amount: int
     method: str

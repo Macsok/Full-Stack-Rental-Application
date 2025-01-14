@@ -33,7 +33,7 @@ class Car(Base):
 class CarDetails(Base):
     __tablename__ = 'car_details'
 
-    id = Column(Integer, ForeignKey('cars.id'), primary_key=True, index=True)
+    car_id = Column(Integer, ForeignKey('cars.id'), primary_key=True, index=True)
     location_id = Column(Integer, ForeignKey('locations.id'))
     price_per_day = Column(Integer)
     horse_power = Column(Integer)
@@ -49,14 +49,14 @@ class Rental(Base):
 class RentalDetails(Base):
     __tablename__ = 'rental_details'
 
-    id = Column(Integer, ForeignKey('rentals.id'), primary_key=True, index=True)
+    rental_id = Column(Integer, ForeignKey('rentals.id'), primary_key=True, index=True)
     customer_id = Column(Integer, ForeignKey('users.id'))
     total_price = Column(Integer)
 
 class UserDetail(Base):
     __tablename__ = 'user_details'
 
-    id = Column(Integer, ForeignKey('users.id'), primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey('users.id'), primary_key=True, index=True)
     address_id = Column(Integer, ForeignKey('addresses.id'))
     is_active = Column(Boolean, default=True)
     role = Column(String(50))
@@ -66,7 +66,7 @@ class UserDetail(Base):
 class Password(Base):
     __tablename__ = 'passwords'
 
-    id = Column(Integer, ForeignKey('users.id'), primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey('users.id'), primary_key=True, index=True)
     password = Column(String(50))
 
 class Payment(Base):
@@ -78,7 +78,7 @@ class Payment(Base):
 class PaymentDetails(Base):
     __tablename__ = 'payment_details'
 
-    id = Column(Integer, ForeignKey('payments.id'), primary_key=True, index=True)
+    payment_id = Column(Integer, ForeignKey('payments.id'), primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey('users.id'))
     amount = Column(Integer)
     method = Column(String(50))
