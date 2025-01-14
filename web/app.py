@@ -48,8 +48,8 @@ async def cars():
         for car in available_cars:
             car_id = car['id']
             if car_id in car_details_dict:
-                car['price_per_day'] = car_details_dict[car_id]['price_per_day']
-            else :
+                car.update(car_details_dict[car_id])
+            else:
                 car['price_per_day'] = 'N/A'
             
     return render_template('cars.html', cars=available_cars)

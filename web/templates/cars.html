@@ -15,8 +15,9 @@
         <ul>
             {% for car in cars %}
             <li style="background-color: #1f1f1f; padding: 10px; margin-bottom: 10px;">
-                <h3>{{ car.make }} {{ car.model }} ({{ car.year }})</h3>
+                <h3>{{ car.brand }} {{ car.model }} ({{ car.year }})</h3>
                 <p>Cena za dzień: {{ car.price_per_day }} PLN</p>
+                <p>Moc: {{ car.horse_power }} KM</p>
                 <a href="{{ url_for('rental', car_id=car.id) }}">Wypożycz</a>
             </li>
             {% endfor %}
