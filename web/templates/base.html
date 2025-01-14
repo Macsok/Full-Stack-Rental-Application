@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>{% block title %}Rent-To-Go Car Wypożyczalnia Samochodów{% endblock %}</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+        header, footer {
+            background-color: #1f1f1f;
+            padding: 1em;
+            text-align: center;
+        }
+        a {
+            color: #bb86fc;
+        }
+        main {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🚗 Rent-To-Go Car Rental</h1>
+        <nav>
+            <a href="{{ url_for('index') }}">Strona Główna</a> |
+            <a href="{{ url_for('cars') }}">Dostępne Pojazdy</a> |
+            {% if session.get('token') %}
+                <a href="{{ url_for('logout') }}">Wyloguj</a>
+            {% else %}
+                <a href="{{ url_for('login') }}">Zaloguj</a>
+            {% endif %}
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <p>&copy; 2025 Full-Stack Rental Application</p>
+    </footer>
+</body>
+</html>
