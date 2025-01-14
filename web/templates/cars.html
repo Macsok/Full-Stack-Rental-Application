@@ -5,19 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dostępne Samochody</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    {% extends "base.html" %}
 </head>
+
+{% block content %}
 <body>
-    <header>
-        <h1>Dostępne Samochody</h1>
-        <nav>
-            <a href="/">Strona Główna</a> |
-            <a href="/cars">Dostępne Samochody</a>
-        </nav>
-    </header>
+    <h1 style="text-align: center;">Dostępne Pojazdy</h1>
     <main>
         <ul>
             {% for car in cars %}
-            <li>
+            <li style="background-color: #1f1f1f; padding: 10px; margin-bottom: 10px;">
                 <h3>{{ car.make }} {{ car.model }} ({{ car.year }})</h3>
                 <p>Cena za dzień: {{ car.price_per_day }} PLN</p>
                 <a href="{{ url_for('rental', car_id=car.id) }}">Wypożycz</a>
@@ -27,3 +24,4 @@
     </main>
 </body>
 </html>
+{% endblock %}
