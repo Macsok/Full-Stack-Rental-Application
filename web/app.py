@@ -127,6 +127,50 @@ async def register():
         return redirect(url_for('login'))
     return render_template('register.html')
 
+
+@app.route('/add_car', methods=['GET', 'POST'])
+async def add_car():
+    if request.method == 'POST':
+        if 'brand' in request.form and 'model' in request.form and 'year' in request.form:
+            brand = request.form['brand']
+            model = request.form['model']
+            year = int(request.form['year'])
+
+            async with httpx.AsyncClient() as client:
+                car_data = {
+                    "brand": brand,
+                    "model": model,
+                    "year": year
+                }
+                response = await client.post("http://localhost:8000/api/v1/cars", json=car_data)
+                response.raise_for_status()
+                response = await client.get("http://localhost:8000/api/v1/cars")
+                car_id = response.json()[-1]['id'] + 1
+                
+                return render_template('add_car.html', step=2, car_id=car_id)
+
+        elif 'car_id' in request.form and 'price_per_day' in request.form and 'horse_power' in request.form:
+            car_id = int(request.form['car_id'])
+            price_per_day = int(request.form['price_per_day'])
+            horse_power = int(request.form['horse_power'])
+
+            async with httpx.AsyncClient() as client:
+                car_detail_data = {
+                    "car_id": car_id,
+                    "location_id": 1,
+                    "price_per_day": price_per_day,
+                    "horse_power": horse_power
+                }
+                response = await client.post("http://localhost:8000/api/v1/car_details", json=car_detail_data)
+                response.raise_for_status()
+
+            return redirect(url_for('index'))
+
+    return render_template('add_car.html', step=1)
+
+
+
+
 #------------------------- Browsing -------------------------#
 
 @app.route('/cars')
