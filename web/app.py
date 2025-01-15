@@ -252,7 +252,7 @@ async def rental_detail(car_id, rental_id):
     if not token:
         return redirect(url_for('login'))
 
-    # Pobieramy daty z sesji
+    # Pobieramy daty oraz customer_id z sesji
     rental_date = session.get('rental_date')
     return_date = session.get('return_date')
     customer_id = session.get('customer_id')
@@ -269,7 +269,7 @@ async def rental_detail(car_id, rental_id):
         price_per_day = price_response.json()[0]['price_per_day']
 
         # Obliczanie całkowitego kosztu, jeśli daty są dostępne
-        total_price = 0
+        total_price = 9
         if rental_date and return_date:
             rental_date_obj = datetime.strptime(rental_date, "%Y-%m-%d")
             return_date_obj = datetime.strptime(return_date, "%Y-%m-%d")
@@ -277,7 +277,21 @@ async def rental_detail(car_id, rental_id):
             total_price = delta_days * price_per_day if delta_days > 0 else 0
 
         if request.method == 'POST':
-          
+            # Pobranie danych z formularza (zakładając, że dane są również przesyłane)
+            rental_date = request.form['rental_date']
+            return_date = request.form['return_date']
+            customer_id = request.form['customer_id']
+
+            # Przechowywanie danych w sesji
+            session['rental_date'] = rental_date
+            session['return_date'] = return_date
+            session['customer_id'] = customer_id
+
+            # Obliczanie całkowitego kosztu po przesłaniu formularza
+            rental_date_obj = datetime.strptime(rental_date, "%Y-%m-%d")
+            return_date_obj = datetime.strptime(return_date, "%Y-%m-%d")
+            delta_days = (return_date_obj - rental_date_obj).days
+            total_price = delta_days * price_per_day if delta_days > 0 else 0
 
             # Tworzenie szczegółów wypożyczenia
             rental_detail_data = {
@@ -287,7 +301,14 @@ async def rental_detail(car_id, rental_id):
             }
             await client.post("http://localhost:8000/api/v1/rental_details", json=rental_detail_data)
             flash(f"Całkowity koszt wypożyczenia to {total_price} PLN", "success")
-            return redirect(url_for('rental_detail', car_id=car_id, rental_id=rental_id))
+            return redirect(url_for('index', car_id=car_id, rental_id=rental_id))
 
-    return render_template('rental_detail.html', car=car, rental_id=rental_id, car_id=car_id, price_per_day=price_per_day, rental_date=rental_date, return_date=return_date, total_price=total_price, customer_id=customer_id)
-
+    return render_template('rental_detail.html', 
+                           car=car, 
+                           rental_id=rental_id, 
+                           car_id=car_id, 
+                           price_per_day=price_per_day, 
+                           rental_date=rental_date, 
+                           return_date=return_date, 
+                           total_price=total_price, 
+                           customer_id=customer_id)
