@@ -34,9 +34,9 @@ async def login():
                 return redirect(url_for('login'))
             stored_password = password_response.json()[0]['password']
             
-            hashed_provided_password = hashlib.sha512(provided_password.encode()).hexdigest()[:50]
+            #hashed_provided_password = hashlib.sha512(provided_password.encode()).hexdigest()[:50]
             
-            if hashed_provided_password == stored_password:
+            if provided_password == stored_password:
                 session['token'] = 'your_session_token'
                 return redirect(url_for('index'))
             else:
