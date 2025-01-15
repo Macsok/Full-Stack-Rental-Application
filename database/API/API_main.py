@@ -37,8 +37,8 @@ db_slave_dependency = Annotated[Session, Depends(get_db_slave)]
 async def read_cars_vulnerable(
     db: db_slave_dependency,
     car_id: int = None,
-    brand: str = None, 
-    model: str = None, 
+    brand: str = None,
+    model: str = None,
     year: int = None
 ):
     query = []
@@ -59,8 +59,8 @@ async def read_cars_vulnerable(
 async def read_cars(
     db: db_slave_dependency,
     car_id: int = None,
-    brand: str = None, 
-    model: str = None, 
+    brand: str = None,
+    model: str = None,
     year: int = None
 ):
     query = db.query(models.Car)
@@ -95,6 +95,37 @@ async def read_locations(
     if not locations:
         raise HTTPException(status_code=404, detail='Locations not found')
     return locations
+
+
+@app.get("/api/v1/passwords", status_code=status.HTTP_200_OK)
+async def get_passwords(
+    db: db_slave_dependency,
+    user_id: int = None
+):
+    """
+    Pobiera hasła z tabeli passwords.
+   
+    Możesz filtrować wyniki na podstawie `user_id` (opcjonalnie).
+    """
+    query = db.query(models.Password)
+   
+    # Jeśli podano user_id, filtruj wyniki
+    if user_id is not None:
+        query = query.filter(models.Password.user_id == user_id)
+   
+    passwords = query.all()
+   
+    if not passwords:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Nie znaleziono żadnych haseł dla podanego user_id."
+        )
+   
+    return passwords
+
+
+
+
 
 @app.get("/api/v1/users", status_code=status.HTTP_200_OK)
 async def read_users(
@@ -290,6 +321,13 @@ async def create_rental(rental: RentalBase, db: db_master_dependency):
     new_data = models.Rental(**rental.dict())
     db.add(new_data)
     db.commit()
+
+@app.post("/api/v1/passwords", status_code=status.HTTP_201_CREATED)
+async def create_password(password: PasswordBase, db: db_master_dependency):
+    new_data = models.Password(**password.dict())
+    db.add(new_data)
+    db.commit()
+
 
 @app.post("/api/v1/cars", status_code=status.HTTP_201_CREATED)
 async def create_car(car: CarBase, db: db_master_dependency):
