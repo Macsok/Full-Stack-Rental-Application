@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 import httpx
 import time
 import hashlib
+from datetime import datetime
+
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Add a secret key for session management
@@ -38,6 +40,7 @@ async def login():
             
             if provided_password == stored_password:
                 session['token'] = 'your_session_token'
+                session['customer_id'] = user_id
                 return redirect(url_for('index'))
             else:
                 flash("Wrong username or password", "error")
@@ -48,6 +51,8 @@ async def login():
 def logout():
     session.pop('token', None)
     return redirect(url_for('index'))
+
+
 
 @app.route('/check_username', methods=['POST'])
 async def check_username():
@@ -203,29 +208,86 @@ async def rental(car_id):
     token = session.get('token')
     if not token:
         return redirect(url_for('login'))
-    if request.method == 'POST':
-        customer_name = request.form['customer_name']
+
+    if request.method == 'POST' and request.form.get('step') == '1':
+        # Krok 1: Zbieranie danych wypożyczenia
         rental_date = request.form['rental_date']
         return_date = request.form['return_date']
-        
+
+        # Zapisujemy daty w sesji
+        session['rental_date'] = rental_date
+        session['return_date'] = return_date
+
+        # Wysłanie zapytania do API w celu utworzenia wypożyczenia
+        rental_data = {
+            "car_id": car_id,
+            "rental_date": rental_date,
+            "return_date": return_date
+        }
+
         async with httpx.AsyncClient() as client:
-            rental_data = {
-                "car_id": car_id,
-                "customer_name": customer_name,
-                "rental_date": rental_date,
-                "return_date": return_date,
-                "total_price": 100.00  # Cena na stałe 100 PLN
-            }
-            headers = {'Authorization': f'Bearer {token}'}
-            response = await client.post("http://localhost:8000/api/v1/rentals", json=rental_data, headers=headers)
-            response.raise_for_status()
+            response = await client.post("http://localhost:8000/api/v1/rentals", json=rental_data)
+            if response.status_code == 201:
+                response = await client.get(f"http://localhost:8000/api/v1/rentals")
+                response.raise_for_status()
+                rental_id = response.json()[-1]['id']
+                # Przekierowanie do kolejnego kroku
+                return redirect(url_for('rental_detail', car_id=car_id, rental_id=rental_id))
+            else:
+                flash("Wystąpił problem przy tworzeniu wypożyczenia", "error")
+                return redirect(url_for('rental', car_id=car_id))
 
-        return redirect(url_for('cars'))
-
+    # Pobieramy szczegóły samochodu z API
     async with httpx.AsyncClient() as client:
-        headers = {'Authorization': f'Bearer {token}'}
-        response = await client.get(f"http://localhost:8000/api/v1/cars?car_id={car_id}", headers=headers)
+        response = await client.get(f"http://localhost:8000/api/v1/cars?car_id={car_id}")
         response.raise_for_status()
         car = response.json()[0]
 
     return render_template('rental.html', car=car)
+
+
+@app.route('/rental_detail/<int:car_id>/<int:rental_id>', methods=['GET', 'POST'])
+async def rental_detail(car_id, rental_id):
+    token = session.get('token')
+    if not token:
+        return redirect(url_for('login'))
+
+    # Pobieramy daty z sesji
+    rental_date = session.get('rental_date')
+    return_date = session.get('return_date')
+    customer_id = session.get('customer_id')
+
+    async with httpx.AsyncClient() as client:
+        # Pobieranie szczegółów samochodu (w tym cena za dzień)
+        car_response = await client.get(f"http://localhost:8000/api/v1/cars?car_id={car_id}")
+        car_response.raise_for_status()
+        car = car_response.json()
+
+        # Pobieranie ceny za dzień z car_details
+        price_response = await client.get(f"http://localhost:8000/api/v1/car_details?car_id={car_id}")
+        price_response.raise_for_status()
+        price_per_day = price_response.json()[0]['price_per_day']
+
+        # Obliczanie całkowitego kosztu, jeśli daty są dostępne
+        total_price = 0
+        if rental_date and return_date:
+            rental_date_obj = datetime.strptime(rental_date, "%Y-%m-%d")
+            return_date_obj = datetime.strptime(return_date, "%Y-%m-%d")
+            delta_days = (return_date_obj - rental_date_obj).days
+            total_price = delta_days * price_per_day if delta_days > 0 else 0
+
+        if request.method == 'POST':
+          
+
+            # Tworzenie szczegółów wypożyczenia
+            rental_detail_data = {
+                "rental_id": rental_id,
+                "customer_id": customer_id,
+                "total_price": total_price
+            }
+            await client.post("http://localhost:8000/api/v1/rental_details", json=rental_detail_data)
+            flash(f"Całkowity koszt wypożyczenia to {total_price} PLN", "success")
+            return redirect(url_for('rental_detail', car_id=car_id, rental_id=rental_id))
+
+    return render_template('rental_detail.html', car=car, rental_id=rental_id, car_id=car_id, price_per_day=price_per_day, rental_date=rental_date, return_date=return_date, total_price=total_price, customer_id=customer_id)
+
