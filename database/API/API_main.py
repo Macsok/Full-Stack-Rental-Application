@@ -102,11 +102,6 @@ async def get_passwords(
     db: db_slave_dependency,
     user_id: int = None
 ):
-    """
-    Pobiera hasła z tabeli passwords.
-   
-    Możesz filtrować wyniki na podstawie `user_id` (opcjonalnie).
-    """
     query = db.query(models.Password)
    
     # Jeśli podano user_id, filtruj wyniki
@@ -122,9 +117,6 @@ async def get_passwords(
         )
    
     return passwords
-
-
-
 
 
 @app.get("/api/v1/users", status_code=status.HTTP_200_OK)
