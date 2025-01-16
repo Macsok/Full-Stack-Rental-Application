@@ -36,11 +36,13 @@
             <a href="{{ url_for('cars') }}">Dostępne Pojazdy</a> |
             
             {% if session.get('token') %}
-                <a href="{{ url_for('add_car') }}">Dodaj Pojazd</a> |
+                {% if session.get('role') == 'admin' %}
+                    <a href="{{ url_for('add_car') }}">Dodaj Pojazd</a> |
+                {% endif %}
                 <a href="{{ url_for('user_rentals') }}">Historia wypożyczeń</a> |
                 <a href="{{ url_for('logout') }}">Wyloguj</a>
-                
             {% else %}
+            
                 <a href="{{ url_for('login') }}">Zaloguj</a> |
                 <a href="{{ url_for('register') }}">Zarejestruj</a>
             {% endif %}
