@@ -34,9 +34,11 @@
         <nav>
             <a href="{{ url_for('index') }}">Strona Główna</a> |
             <a href="{{ url_for('cars') }}">Dostępne Pojazdy</a> |
-            <a href="{{ url_for('add_car') }}">Dodaj Pojazd</a> |
+            
             {% if session.get('token') %}
+                <a href="{{ url_for('add_car') }}">Dodaj Pojazd</a> |
                 <a href="{{ url_for('logout') }}">Wyloguj</a>
+                
             {% else %}
                 <a href="{{ url_for('login') }}">Zaloguj</a> |
                 <a href="{{ url_for('register') }}">Zarejestruj</a>
