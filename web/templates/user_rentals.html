@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pl">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Twoje Wypożyczenia</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        {% extends "base.html" %}
+    </head>
+    {% block content %}
+<body>
+    <header>
+        <h1>Twoje Wypożyczenia</h1>
+    </header>
+    <main>
+        {% if rentals and rentals|length > 0 %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Samochód</th>
+                        <th>Data rozpoczęcia</th>
+                        <th>Data zakończenia</th>                
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rental in rentals %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ rental.car_name }}</td>
+                            <td>{{ rental.start_date }}</td>
+                            <td>{{ rental.end_date }}</td>                          
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Nie masz jeszcze żadnych wypożyczeń.</p>
+        {% endif %}
+    </main>
+</body>
+</html>
+{% endblock %}

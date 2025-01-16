@@ -223,7 +223,7 @@ async def read_rental_details(
 ):
     query = db.query(models.RentalDetails)
     if rental_detail_id:
-        query = query.filter(models.RentalDetails.id == rental_detail_id)
+        query = query.filter(models.RentalDetails.rental_id == rental_detail_id)
     if customer_id:
         query = query.filter(models.RentalDetails.customer_id == customer_id)
     if total_price:
