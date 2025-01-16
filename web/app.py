@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 import httpx
 import time
 import hashlib
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 app = Flask(__name__)
@@ -274,6 +274,8 @@ async def rental_detail(car_id, rental_id):
 
         if request.method == 'POST':
 
+            rental_id = rental_id + 1
+
             rental_detail_data = {
                 "rental_id": rental_id,
                 "customer_id": customer_id,
@@ -281,7 +283,18 @@ async def rental_detail(car_id, rental_id):
             }
             await client.post("http://localhost:8000/api/v1/rental_details", json=rental_detail_data)
             flash(f"Całkowity koszt wypożyczenia to {total_price} PLN", "success")
-            return redirect(url_for('index', car_id=car_id, rental_id=rental_id))
+
+            payment_data = {
+                "rental_id": rental_id
+            }
+            await client.post("http://localhost:8000/api/v1/payments", json=payment_data)
+            flash(f"utworzono payment")
+            response_payment = await client.get(f"http://localhost:8000/api/v1/payments")
+            response_payment.raise_for_status()
+            payment_id = response_payment.json()[-1]['id'] + 1
+            session['payment_id'] = payment_id
+            session['total_price'] = total_price
+            return redirect(url_for('payment_detail', car_id=car_id, rental_id=rental_id))
 
     return render_template('rental_detail.html', 
                            car=car, 
@@ -292,3 +305,76 @@ async def rental_detail(car_id, rental_id):
                            return_date=return_date, 
                            total_price=total_price, 
                            customer_id=customer_id)
+
+
+@app.route('/payment_detail/<int:car_id>/<int:rental_id>', methods=['GET', 'POST'])
+async def payment_detail(car_id,rental_id):
+       
+    payment_id = session.get('payment_id')
+    user_id = session.get('customer_id')
+    amount = session.get('total_price')
+  
+    payment_methods = ["Gotówka", "Karta płatnicza", "Przelew tradycyjny", "Blik", "PayPo"]
+    payment_date = (datetime.now() + timedelta(days=5)).strftime("%Y-%m-%d")
+
+    if request.method == 'POST':
+        method = request.form.get('payment_method')
+        session['payment_method'] = method
+        if not method:
+            flash("Wybierz metodę płatności", "error")
+            return render_template('payment_detail.html', payment_methods=payment_methods, amount=amount)
+        
+        payment_detail_data = {
+            "payment_id": payment_id,
+            "user_id": user_id,
+            "amount": amount,
+            "method": method,
+            "payment_date": payment_date
+        }
+
+        async with httpx.AsyncClient() as client:
+            response = await client.post("http://localhost:8000/api/v1/payment_details", json=payment_detail_data)
+            if response.status_code == 201:
+                flash("Szczegóły płatności zostały zapisane", "success")
+                return redirect(url_for('rental_summary', car_id=car_id, rental_id=rental_id))
+            else:
+                flash("Nie udało się zapisać szczegółów płatności", "error")
+    
+    return render_template('payment_detail.html', payment_methods=payment_methods, amount=amount, payment_date=payment_date, car_id=car_id, rental_id=rental_id)
+
+
+@app.route('/rental_summary/<int:car_id>/<int:rental_id>', methods=['GET'])
+async def rental_summary(car_id, rental_id):
+
+    rental_date = session.get('rental_date')
+    return_date = session.get('return_date')
+    total_price = session.get('total_price')
+    payment_id = session.get('payment_id')
+    payment_method = session.get('payment_method')
+
+    async with httpx.AsyncClient() as client:
+        car_response = await client.get(f"http://localhost:8000/api/v1/cars?car_id={car_id}")
+        car_response.raise_for_status()
+        car = car_response.json()[-1]
+
+        payment_detail_response = await client.get(f"http://localhost:8000/api/v1/payment_details?payment_id={payment_id}")
+        payment_detail_response.raise_for_status()
+        payment_detail = payment_detail_response.json()[-1]
+
+    payment_date = payment_detail.get('payment_date', 'N/A')
+    amount = payment_detail.get('amount', 'N/A')
+
+
+    return render_template(
+        'summary.html',
+        car=car,
+        rental_id=rental_id,
+        rental_date=rental_date,
+        return_date=return_date,
+        total_price=total_price,
+        payment_id=payment_id,
+        amount=amount,
+        payment_method=payment_method,
+        payment_date=payment_date
+    )
+

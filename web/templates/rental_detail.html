@@ -10,29 +10,21 @@
 
 {% block content %}
 <body>
-    <h1>Szczegóły Wypożyczenia</h1>
+    <h1>Proces Wypożyczenia</h1>
     
     <form action="{{ url_for('rental_detail', car_id=car_id, rental_id=rental_id) }}" method="POST">
-        <h2>Krok 2: Utwórz Szczegóły Wypożyczenia</h2>
-      
+        <h2>Szczegóły Wypożyczenia</h2>
         <label for="rental_id">ID Wypożyczenia:</label>
         <input type="number" name="rental_id" value="{{ rental_id }}" readonly><br>
-
         <label for="car_id">ID Samochodu:</label>
         <input type="number" name="car_id" value="{{ car_id }}" readonly><br>
-
         <label for="customer_id">ID Klienta:</label>
         <input type="number" name="customer_id" value="{{ customer_id }}" readonly><br>
-
         <label for="rental_date">Data rozpoczęcia:</label>
         <input type="date" id="rental_date" name="rental_date" value="{{ rental_date }}" readonly><br>
-
         <label for="return_date">Data zakończenia:</label>
         <input type="date" id="return_date" name="return_date" value="{{ return_date }}" readonly><br>
-
-
         <h3>Całkowity koszt: <span id="total_price">{{ total_price }} PLN</span></h3>
-
         <button type="submit">Utwórz Szczegóły Wypożyczenia</button>
     </form>
 </body>

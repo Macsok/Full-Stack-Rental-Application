@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Podsumowanie Wypożyczenia</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    {% extends "base.html" %}
+</head>
+{% block content %}
+<body>
+    <h1>Dziękujemy za skorzystanie z usług naszej wypożyczalni Rent-To-Go!</h1>
+    <h2>Podsumowanie Wypożyczenia</h2>
+
+
+    <h3>Informacje o samochodzie</h3>
+    <p><strong>Model:</strong> {{ car['model'] }}</p>
+    <p><strong>Marka:</strong> {{ car['brand'] }}</p>
+    <p><strong>Rok produkcji:</strong> {{ car['year'] }}</p>
+
+    <h3>Informacje o wypożyczeniu</h3>
+    <p><strong>ID Wypożyczenia:</strong> {{ rental_id }}</p>
+    <p><strong>Data rozpoczęcia:</strong> {{ rental_date }}</p>
+    <p><strong>Data zakończenia:</strong> {{ return_date }}</p>
+    <p><strong>Całkowity koszt:</strong> {{ total_price }} PLN</p>
+
+    <h3>Szczegóły płatności</h3>
+    <p><strong>ID Płatności:</strong> {{ payment_id }}</p>
+    <p><strong>Kwota:</strong> {{ amount }} PLN</p>
+    <p><strong>Metoda płatności:</strong> {{ payment_method }}</p>
+    <p><strong>Termin płatności:</strong> {{ payment_date }}</p>
+    
+    <a href="{{ url_for('index') }}" class="button">Powrót do strony głównej</a>
+    
+</body>
+</html>
+{% endblock %}

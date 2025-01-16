@@ -11,10 +11,8 @@
 {% block content %}
 <body>
     <h1>Proces Wypożyczenia</h1>
-    
-    <!-- Krok 1: Utwórz Wypożyczenie -->
     <form action="{{ url_for('rental', car_id=car.id) }}" method="POST">
-        <h2>Krok 1: Utwórz Wypożyczenie</h2>
+        <h2>Wybierz datę rozpoczęcia i zakończenia wynajmu</h2>
         <input type="hidden" name="car_id" value="{{ car.id }}">
         <label for="rental_date">Data rozpoczęcia:</label>
         <input type="date" name="rental_date" required><br>
@@ -22,10 +20,6 @@
         <input type="date" name="return_date" required><br>
         <button type="submit" name="step" value="1">Utwórz Wypożyczenie</button>
     </form>
-    
-
-
-
 </body>
 </html>
 {% endblock %}
