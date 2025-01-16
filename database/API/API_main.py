@@ -202,7 +202,7 @@ async def read_car_details(
 ):
     query = db.query(models.CarDetails)
     if car_detail_id:
-        query = query.filter(models.CarDetails.id == car_detail_id)
+        query = query.filter(models.CarDetails.car_id == car_detail_id)
     if location_id:
         query = query.filter(models.CarDetails.location_id == location_id)
     if price_per_day:
@@ -236,7 +236,7 @@ async def read_rental_details(
 @app.get("/api/v1/user_details", status_code=status.HTTP_200_OK)
 async def read_user_details(
     db: db_slave_dependency,
-    user_detail_id: int = None,
+    user_id: int = None,
     address_id: int = None,
     is_active: bool = None,
     role: str = None,
@@ -244,8 +244,8 @@ async def read_user_details(
     phone: str = None
 ):
     query = db.query(models.UserDetail)
-    if user_detail_id:
-        query = query.filter(models.UserDetail.id == user_detail_id)
+    if user_id:
+        query = query.filter(models.UserDetail.user_id == user_id)
     if address_id:
         query = query.filter(models.UserDetail.address_id == address_id)
     if is_active is not None:
@@ -288,7 +288,7 @@ async def read_payment_details(
 ):
     query = db.query(models.PaymentDetails)
     if payment_detail_id:
-        query = query.filter(models.PaymentDetails.id == payment_detail_id)
+        query = query.filter(models.PaymentDetails.payment_id == payment_detail_id)
     if user_id:
         query = query.filter(models.PaymentDetails.user_id == user_id)
     if amount:
