@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Add a secret key for session management
+app.secret_key = 'secret_key'  # Secret key for session management
 
 def initialize():
     app.run(debug=True)
@@ -39,8 +39,14 @@ async def login():
             hashed_provided_password = hashlib.sha512(provided_password.encode()).hexdigest()[:50]
             
             if hashed_provided_password == stored_password:
-                session['token'] = 'your_session_token'
+                user_details_response = await client.get(f"http://localhost:8000/api/v1/user_details?user_id={user_id}")
+                user_details_response.raise_for_status()
+                user_role = user_details_response.json()[0]['role']
+                print(user_role, user_id)
+                
+                session['token'] = provided_username
                 session['customer_id'] = user_id
+                session['role'] = user_role
                 return redirect(url_for('index'))
             else:
                 flash("Wrong username or password", "error")
@@ -51,8 +57,6 @@ async def login():
 def logout():
     session.pop('token', None)
     return redirect(url_for('index'))
-
-
 
 @app.route('/check_username', methods=['POST'])
 async def check_username():
@@ -86,9 +90,7 @@ async def register():
                 pass
             # Register new user
             user_data = {
-                "username": username,
-                "password": password,
-                "email": email,
+                "username": username
             }
             response = await client.post("http://localhost:8000/api/v1/users", json=user_data)
             response.raise_for_status()
@@ -123,6 +125,7 @@ async def register():
             }
             await client.post("http://localhost:8000/api/v1/user_details", json=user_detail_data)
             
+            password = hashlib.sha512(password.encode()).hexdigest()[:50]
             password_data = {
                 "user_id": user_id,
                 "password": password
@@ -135,6 +138,10 @@ async def register():
 
 @app.route('/add_car', methods=['GET', 'POST'])
 async def add_car():
+    if 'token' not in session or session.get('role') != 'admin':
+        flash("Access denied. Admins only.", "error")
+        return redirect(url_for('index'))
+
     if request.method == 'POST':
         if 'brand' in request.form and 'model' in request.form and 'year' in request.form:
             brand = request.form['brand']
@@ -174,9 +181,8 @@ async def add_car():
     return render_template('add_car.html', step=1)
 
 
-
-
 #------------------------- Browsing -------------------------#
+
 
 @app.route('/cars')
 async def cars():
@@ -196,7 +202,7 @@ async def cars():
         
         for car in available_cars:
             car_id = car['id']
-            if car_id in car_details_dict:
+            if (car_id in car_details_dict):
                 car.update(car_details_dict[car_id])
             else:
                 car['price_per_day'] = 'N/A'
@@ -206,6 +212,7 @@ async def cars():
 @app.route('/rental/<int:car_id>', methods=['GET', 'POST'])
 async def rental(car_id):
     token = session.get('token')
+    print(token)
     if not token:
         return redirect(url_for('login'))
 
@@ -421,4 +428,3 @@ async def user_rentals():
             
 
     return render_template('user_rentals.html', rentals=user_rentals)
-
