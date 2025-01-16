@@ -106,6 +106,7 @@ INSERT INTO users (username) VALUES ('eve_miller');
 INSERT INTO users (username) VALUES ('frank_wilson');
 INSERT INTO users (username) VALUES ('grace_lee');
 INSERT INTO users (username) VALUES ('henry_taylor');
+INSERT INTO users (username) VALUES ('admin');
 
 INSERT INTO locations (address_id, name) VALUES (1, 'Downtown');
 INSERT INTO locations (address_id, name) VALUES (2, 'Airport');
@@ -172,6 +173,7 @@ INSERT INTO user_details (user_id, address_id, is_active, role, email, phone) VA
 INSERT INTO user_details (user_id, address_id, is_active, role, email, phone) VALUES (8, 8, TRUE, 'customer', 'frank@example.com', '789012345');
 INSERT INTO user_details (user_id, address_id, is_active, role, email, phone) VALUES (9, 9, TRUE, 'customer', 'grace@example.com', '890123456');
 INSERT INTO user_details (user_id, address_id, is_active, role, email, phone) VALUES (10, 10, TRUE, 'customer', 'henry@example.com', '901234567');
+INSERT INTO user_details (user_id, address_id, is_active, role, email, phone) VALUES (11, 1, TRUE, 'admin', 'admin@a.com', '123123123');
 
 INSERT INTO passwords (user_id, password) VALUES (1, 'password123');
 INSERT INTO passwords (user_id, password) VALUES (2, 'password456');
@@ -183,6 +185,7 @@ INSERT INTO passwords (user_id, password) VALUES (7, 'password901');
 INSERT INTO passwords (user_id, password) VALUES (8, 'password234');
 INSERT INTO passwords (user_id, password) VALUES (9, 'password567');
 INSERT INTO passwords (user_id, password) VALUES (10, 'password890');
+INSERT INTO passwords (user_id, password) VALUES (11, 'c7ad44cbad762a5da0a452f9e854fdc1e0e7a52a38015f23f3');
 
 INSERT INTO payments (rental_id) VALUES (1);
 INSERT INTO payments (rental_id) VALUES (2);
