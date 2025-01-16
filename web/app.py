@@ -229,6 +229,7 @@ async def rental(car_id):
                 response = await client.get(f"http://localhost:8000/api/v1/rentals")
                 response.raise_for_status()
                 rental_id = response.json()[-1]['id']
+                rental_id = rental_id + 1
                 
                 return redirect(url_for('rental_detail', car_id=car_id, rental_id=rental_id))
             else:
@@ -274,7 +275,7 @@ async def rental_detail(car_id, rental_id):
 
         if request.method == 'POST':
 
-            rental_id = rental_id + 1
+            
 
             rental_detail_data = {
                 "rental_id": rental_id,
@@ -377,4 +378,47 @@ async def rental_summary(car_id, rental_id):
         payment_method=payment_method,
         payment_date=payment_date
     )
+
+@app.route('/user_rentals', methods=['GET'])
+async def user_rentals():
+    user_id = session.get('customer_id')
+
+    async with httpx.AsyncClient() as client:
+        rentals_response = await client.get("http://localhost:8000/api/v1/rentals")
+        if rentals_response.status_code != 200:
+            flash("Nie udało się pobrać wypożyczeń.", "error")
+            return redirect(url_for('index'))
+
+        all_rentals = rentals_response.json()
+
+        user_rentals = []
+        for rental in all_rentals:
+            rental_id = rental['id']
+
+            rental_details_response = await client.get(f"http://localhost:8000/api/v1/rental_details?rental_detail_id={rental_id}")
+            if rental_details_response.status_code != 200:
+                continue 
+
+            rental_details_list = rental_details_response.json()
+            for rental_details in rental_details_list:
+                if rental_details.get('customer_id') == user_id:
+                    rental['start_date'] = rental.get('rental_date', 'Brak danych')
+                    rental['end_date'] = rental.get('return_date', 'Brak danych')
+                    user_rentals.append(rental)
+                    break
+
+        car_ids = {rental['car_id'] for rental in user_rentals}
+        cars_response = await client.get(f"http://localhost:8000/api/v1/cars?car_ids={','.join(map(str, car_ids))}")
+        if cars_response.status_code != 200:
+            flash("Nie udało się pobrać szczegółów aut.", "error")
+            return redirect(url_for('index'))
+
+        cars = cars_response.json()
+        car_details = {car['id']: f"{car['brand']} {car['model']}" for car in cars}
+
+        for rental in user_rentals:
+            rental['car_name'] = car_details.get(rental['car_id'], "Nieznane auto")
+            
+
+    return render_template('user_rentals.html', rentals=user_rentals)
 
