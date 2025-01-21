@@ -12,6 +12,37 @@ def initialize():
     app.run(debug=True)
 
 
+
+async def check_availability(car_id: int, rental_date: str, return_date: str) -> bool:
+
+    rental_date_dt = datetime.strptime(rental_date, "%Y-%m-%d")
+    return_date_dt = datetime.strptime(return_date, "%Y-%m-%d")
+
+    if rental_date_dt > return_date_dt:
+        raise ValueError("Data zwrotu musi być późniejsza niż data wypożyczenia.")
+
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            "http://localhost:8000/api/v1/rentals",
+            params={"car_id": car_id}
+        )
+        response.raise_for_status()
+        rentals = response.json()
+
+    for rental in rentals:
+        existing_rental_date = datetime.strptime(rental["rental_date"], "%Y-%m-%d")
+        existing_return_date = datetime.strptime(rental["return_date"], "%Y-%m-%d")
+
+        if not (
+            return_date_dt < existing_rental_date or
+            rental_date_dt > existing_return_date
+        ):
+            return False
+
+    return True
+
+
+
 #------------------------- Login / Register -------------------------#
 @app.route('/')
 def index():
@@ -212,14 +243,22 @@ async def cars():
 @app.route('/rental/<int:car_id>', methods=['GET', 'POST'])
 async def rental(car_id):
     token = session.get('token')
-    print(token)
     if not token:
         return redirect(url_for('login'))
 
     if request.method == 'POST' and request.form.get('step') == '1':
-
         rental_date = request.form['rental_date']
         return_date = request.form['return_date']
+
+        try:
+            is_available = await check_availability(car_id, rental_date, return_date)
+        except ValueError as e:
+            flash(str(e), "error")
+            return redirect(url_for('rental', car_id=car_id))
+
+        if not is_available:
+            flash("Samochód jest już zarezerwowany w wybranym terminie.", "error")
+            return redirect(url_for('rental', car_id=car_id))
 
         session['rental_date'] = rental_date
         session['return_date'] = return_date
@@ -235,22 +274,18 @@ async def rental(car_id):
             if response.status_code == 201:
                 response = await client.get(f"http://localhost:8000/api/v1/rentals")
                 response.raise_for_status()
-                rental_id = response.json()[-1]['id']
-                rental_id = rental_id + 1
-                
+                rental_id = response.json()[-1]['id'] + 1
                 return redirect(url_for('rental_detail', car_id=car_id, rental_id=rental_id))
             else:
                 flash("Wystąpił problem przy tworzeniu wypożyczenia", "error")
                 return redirect(url_for('rental', car_id=car_id))
 
-   
     async with httpx.AsyncClient() as client:
         response = await client.get(f"http://localhost:8000/api/v1/cars?car_id={car_id}")
         response.raise_for_status()
         car = response.json()[0]
 
     return render_template('rental.html', car=car)
-
 
 @app.route('/rental_detail/<int:car_id>/<int:rental_id>', methods=['GET', 'POST'])
 async def rental_detail(car_id, rental_id):
@@ -278,7 +313,7 @@ async def rental_detail(car_id, rental_id):
             rental_date_obj = datetime.strptime(rental_date, "%Y-%m-%d")
             return_date_obj = datetime.strptime(return_date, "%Y-%m-%d")
             delta_days = (return_date_obj - rental_date_obj).days
-            total_price = delta_days * price_per_day if delta_days > 0 else 0
+            total_price = delta_days * price_per_day if delta_days > 0 else price_per_day
 
 
             rental_detail_data = {
@@ -287,13 +322,13 @@ async def rental_detail(car_id, rental_id):
                 "total_price": total_price
             }
             await client.post("http://localhost:8000/api/v1/rental_details", json=rental_detail_data)
-            flash(f"Całkowity koszt wypożyczenia to {total_price} PLN", "success")
+            #flash(f"Całkowity koszt wypożyczenia to {total_price} PLN", "success")
 
             payment_data = {
                 "rental_id": rental_id
             }
             await client.post("http://localhost:8000/api/v1/payments", json=payment_data)
-            flash(f"utworzono payment")
+            flash(f"Pomyślnie zapisano termin wynajmu", "success")
             response_payment = await client.get(f"http://localhost:8000/api/v1/payments")
             response_payment.raise_for_status()
             payment_id = response_payment.json()[-1]['id'] + 1
