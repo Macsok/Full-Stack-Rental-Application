@@ -10,18 +10,18 @@
 
 {% block content %}
 <body>
-    <h1 style="text-align: center;">Dostępne Pojazdy</h1>
+    <h1 style="text-align: center; margin-top: 20px;">Dostępne Pojazdy</h1>
     <main>
-        <ul>
+        <div class="car-grid">
             {% for car in cars %}
-            <li style="background-color: #1f1f1f; padding: 10px; margin-bottom: 10px;">
+            <div class="car-card">
                 <h3>{{ car.brand }} {{ car.model }} ({{ car.year }})</h3>
-                <p>Cena za dzień: {{ car.price_per_day }} PLN</p>
-                <p>Moc: {{ car.horse_power }} KM</p>
-                <a href="{{ url_for('rental', car_id=car.id) }}">Wypożycz</a>
-            </li>
+                <p><strong>Cena za dzień:</strong> {{ car.price_per_day }} PLN</p>
+                <p><strong>Moc:</strong> {{ car.horse_power }} KM</p>
+                <a class="btn" href="{{ url_for('rental', car_id=car.id) }}">Wypożycz</a>
+            </div>
             {% endfor %}
-        </ul>
+        </div>
     </main>
 </body>
 </html>

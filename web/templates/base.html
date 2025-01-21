@@ -5,28 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <title>{% block title %}Rent-To-Go Car Wypożyczalnia Samochodów{% endblock %}</title>
-    <style>
-        body {
-            background-color: #121212;
-            color: #ffffff;
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            margin: 0;
-        }
-        header, footer {
-            background-color: #1f1f1f;
-            padding: 1em;
-            text-align: center;
-        }
-        a {
-            color: #bb86fc;
-        }
-        main {
-            flex: 1;
-        }
-    </style>
+
 </head>
 <body>
     <header>
@@ -42,13 +21,22 @@
                 <a href="{{ url_for('user_rentals') }}">Historia wypożyczeń</a> |
                 <a href="{{ url_for('logout') }}">Wyloguj</a>
             {% else %}
-            
                 <a href="{{ url_for('login') }}">Zaloguj</a> |
                 <a href="{{ url_for('register') }}">Zarejestruj</a>
             {% endif %}
         </nav>
     </header>
     <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash flash-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
         {% block content %}{% endblock %}
     </main>
     <footer>
