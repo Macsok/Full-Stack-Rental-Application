@@ -215,30 +215,48 @@ async def add_car():
 #------------------------- Browsing -------------------------#
 
 
-@app.route('/cars')
+@app.route('/cars', methods=['GET', 'POST'])
 async def cars():
+    filters = {}
+    if request.method == 'POST':
+        brand = request.form.get('brand')
+        model = request.form.get('model')
+        year = request.form.get('year')
+        if brand:
+            filters['brand'] = brand
+        if model:
+            filters['model'] = model
+        if year:
+            filters['year'] = year
+
     async with httpx.AsyncClient() as client:
-        response = await client.get("http://localhost:8000/api/v1/cars")
-        response.raise_for_status()
-        available_cars = response.json()
+        response = await client.get("http://localhost:8000/api/v1/cars", params=filters)
+        if response.status_code == 404:
+            flash("Brak dostępnych pojazdów.", "info")
+            available_cars = []
+        else:
+            response.raise_for_status()
+            available_cars = response.json()
         
         # Fetch detailed information for each car
-        car_ids = [car['id'] for car in available_cars]
-        details_responses = await client.get(f"http://localhost:8000/api/v1/car_details?car_ids={','.join(map(str, car_ids))}")
-        details_responses.raise_for_status()
-        car_details_list = details_responses.json()
-        
-        # Create a dictionary for quick lookup
-        car_details_dict = {details['car_id']: details for details in car_details_list}
-        
-        for car in available_cars:
-            car_id = car['id']
-            if (car_id in car_details_dict):
-                car.update(car_details_dict[car_id])
-            else:
-                car['price_per_day'] = 'N/A'
+        if available_cars:
+            car_ids = [car['id'] for car in available_cars]
+            details_responses = await client.get(f"http://localhost:8000/api/v1/car_details?car_ids={','.join(map(str, car_ids))}")
+            details_responses.raise_for_status()
+            car_details_list = details_responses.json()
+            
+            # Create a dictionary for quick lookup
+            car_details_dict = {details['car_id']: details for details in car_details_list}
+            
+            for car in available_cars:
+                car_id = car['id']
+                if car_id in car_details_dict:
+                    car.update(car_details_dict[car_id])
+                else:
+                    car['price_per_day'] = 'N/A'
             
     return render_template('cars.html', cars=available_cars)
+
 
 @app.route('/rental/<int:car_id>', methods=['GET', 'POST'])
 async def rental(car_id):
@@ -304,9 +322,10 @@ async def rental_detail(car_id, rental_id):
         car = car_response.json()
 
         
-        price_response = await client.get(f"http://localhost:8000/api/v1/car_details?car_id={car_id}")
+        price_response = await client.get(f"http://localhost:8000/api/v1/car_details?car_detail_id={car_id}")
         price_response.raise_for_status()
         price_per_day = price_response.json()[0]['price_per_day']
+        print(price_per_day, car_id)
 
         total_price = 9
         if rental_date and return_date:

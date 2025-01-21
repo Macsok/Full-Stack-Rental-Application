@@ -12,6 +12,16 @@
 <body>
     <h1 style="text-align: center; margin-top: 20px;">Dostępne Pojazdy</h1>
     <main>
+        <form method="POST" action="{{ url_for('cars') }}" class="filter-form">
+            <label for="brand">Marka:</label>
+            <input type="text" name="brand" id="brand">
+            <label for="model">Model:</label>
+            <input type="text" name="model" id="model">
+            <label for="year">Rok:</label>
+            <input type="number" name="year" id="year">
+            <button type="submit" class="btn">Filtruj</button>
+        </form>
+        {% if cars %}
         <div class="car-grid">
             {% for car in cars %}
             <div class="car-card">
@@ -22,6 +32,9 @@
             </div>
             {% endfor %}
         </div>
+        {% else %}
+        <p style="text-align: center; color: #f4f4f4;">Brak dostępnych pojazdów.</p>
+        {% endif %}
     </main>
 </body>
 </html>
