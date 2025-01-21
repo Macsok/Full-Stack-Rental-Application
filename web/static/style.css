@@ -276,28 +276,21 @@ table tr:hover {
     justify-content: center;
     gap: 10px;
     margin-bottom: 20px;
-    max-width: 600px;
-    margin: 0 auto 20px auto;
-    padding: 10px;
-    background: #2a2a2a;
-    border-radius: 10px;
     flex-wrap: wrap;
     align-items: center;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 .filter-form label {
     color: #f4f4f4;
     font-weight: bold;
-    flex-basis: 100%;
-    text-align: center;
 }
 
 .filter-form input {
     padding: 5px;
     border-radius: 5px;
     border: 1px solid #ccc;
-    flex: 1;
-    min-width: 150px;
 }
 
 .filter-form .btn {
@@ -308,6 +301,8 @@ table tr:hover {
     border: none;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    flex-basis: 100%;
-    margin-top: 10px;
+}
+
+.filter-form .btn:hover {
+    background-color: #0056b3;
 }
