@@ -280,9 +280,6 @@ async def rental_detail(car_id, rental_id):
             delta_days = (return_date_obj - rental_date_obj).days
             total_price = delta_days * price_per_day if delta_days > 0 else 0
 
-        if 1==1:
-
-            
 
             rental_detail_data = {
                 "rental_id": rental_id,
