@@ -298,7 +298,6 @@ table tr:hover {
     border: 1px solid #ccc;
     flex: 1;
     min-width: 150px;
-    width: 90%;
 }
 
 .filter-form .btn {

@@ -255,7 +255,7 @@ async def cars():
                 else:
                     car['price_per_day'] = 'N/A'
             
-    return render_template('cars.html', cars=available_cars)
+    return render_template('cars.html', cars=available_cars, filters=filters)
 
 
 @app.route('/rental/<int:car_id>', methods=['GET', 'POST'])

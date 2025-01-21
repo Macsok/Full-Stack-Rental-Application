@@ -13,12 +13,18 @@
     <h1 style="text-align: center; margin-top: 20px;">Dostępne Pojazdy</h1>
     <main>
         <form method="POST" action="{{ url_for('cars') }}" class="filter-form">
-            <label for="brand">Marka:</label>
-            <input type="text" name="brand" id="brand">
-            <label for="model">Model:</label>
-            <input type="text" name="model" id="model">
-            <label for="year">Rok:</label>
-            <input type="number" name="year" id="year">
+            <div class="filter-input">
+                <label for="brand">Marka:</label>
+                <input type="text" name="brand" id="brand" value="{{ filters.get('brand', '') }}">
+            </div>
+            <div class="filter-input">
+                <label for="model">Model:</label>
+                <input type="text" name="model" id="model" value="{{ filters.get('model', '') }}">
+            </div>
+            <div class="filter-input">
+                <label for="year">Rok:</label>
+                <input type="number" name="year" id="year" value="{{ filters.get('year', '') }}">
+            </div>
             <button type="submit" class="btn">Filtruj</button>
         </form>
         {% if cars %}
