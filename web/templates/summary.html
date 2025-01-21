@@ -30,7 +30,9 @@
     <p><strong>Metoda płatności:</strong> {{ payment_method }}</p>
     <p><strong>Termin płatności:</strong> {{ payment_date }}</p>
     
-    <a href="{{ url_for('index') }}" class="button">Powrót do strony głównej</a>
+    <div class="button-container">
+        <a href="{{ url_for('index') }}" class="button">Powrót do strony głównej</a>
+    </div>
     
 </body>
 </html>
