@@ -4,25 +4,32 @@ This project is a full-stack application designed to manage car rentals. It incl
 # Project Features
 
 1. **System Architecture**:
-   - The system consists of a browser application and an API that communicates with the database.
+   
+   The system consists of a browser application and an API that communicates with the database.
 
 2. **Secure Communication**:
-   - API communication with the database is encrypted.
+   
+   API communication with the database is encrypted.
 
 3. **SQL Injection Protection**:
-   - Techniques are employed to protect the application from SQL injection attacks.
+   
+   Techniques are employed to protect the application from SQL injection attacks.
 
 4. **Daily Database Backup**:
-   - The system performs a daily backup of the database.
+  
+   The system performs a daily backup of the database.
 
 5. **Data Encryption**:
-   - Data in the database is encrypted using a key.
+   
+   Data in the database is encrypted using a key.
 
 6. **Master-Slave Replication**:
-   - The database operates in a master-slave replication mode.
+   
+   The database operates in a master-slave replication mode.
 
 7. **Query Distribution**:
-   - SELECT queries are executed on the slave (replica) while INSERT/UPDATE queries are executed on the master.
+   
+   SELECT queries are executed on the slave (replica) while INSERT/UPDATE queries are executed on the master.
 
 # Setting up Master-Slave database
 Setting up a master-slave database replication involves configuring one database server (the master) to replicate its data to other database servers (in this case single slave). This setup is useful for load balancing, data redundancy, and backup purposes. Below are the steps to set up master-slave replication using Docker and Docker Compose.
@@ -224,7 +231,7 @@ DROP DATABASE car_rental_db;
 CREATE DATABASE car_rental_db;
 ```
 
-# Side notes
+# Sources
 Column encryption:
 https://serverfault.com/questions/538715/whats-a-good-way-to-encrypt-a-mysql-database-and-is-it-worth-it
 
