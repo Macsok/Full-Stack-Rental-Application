@@ -1,5 +1,28 @@
 # Full-Stack-Rental-Application
-to be completed...
+This project is a full-stack application designed to manage car rentals. It includes a backend API built with FastAPI and a frontend interface. The application supports various functionalities such as user authentication, car management, and rental transactions. Additionally, it features a master-slave database setup for improved performance and reliability.
+
+# Project Features
+
+1. **System Architecture**:
+   - The system consists of a browser application and an API that communicates with the database.
+
+2. **Secure Communication**:
+   - API communication with the database is encrypted.
+
+3. **SQL Injection Protection**:
+   - Techniques are employed to protect the application from SQL injection attacks.
+
+4. **Daily Database Backup**:
+   - The system performs a daily backup of the database.
+
+5. **Data Encryption**:
+   - Data in the database is encrypted using a key.
+
+6. **Master-Slave Replication**:
+   - The database operates in a master-slave replication mode.
+
+7. **Query Distribution**:
+   - SELECT queries are executed on the slave (replica) while INSERT/UPDATE queries are executed on the master.
 
 # Setting up Master-Slave database
 Setting up a master-slave database replication involves configuring one database server (the master) to replicate its data to other database servers (in this case single slave). This setup is useful for load balancing, data redundancy, and backup purposes. Below are the steps to set up master-slave replication using Docker and Docker Compose.
@@ -36,7 +59,6 @@ services:
       - "3306:3306"
     volumes:
       - ./data/mysql-master:/var/lib/mysql
-      - ./keyring/master:/var/lib/mysql-keyring
 
   mysql-slave:
     image: mysql/mysql-server:8.0
@@ -53,7 +75,6 @@ services:
       - "3307:3306"
     volumes:
       - ./data/mysql-slave:/var/lib/mysql
-      - ./keyring/slave:/var/lib/mysql-keyring
 ```
 
 3. **Start the Docker containers**:
