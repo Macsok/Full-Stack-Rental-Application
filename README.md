@@ -151,7 +151,7 @@ services:
     main() {
         while true; do
             perform_task
-            sleep 60
+            sleep 86400
         done
     }
 
