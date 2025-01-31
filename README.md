@@ -212,9 +212,14 @@ services:
 > [!TIP]
 > It is suggested to run/paste `init_database.sql` on master database to initialize tables with encryption and exemplary data.
 
-Running fastAPI:
+Running fastAPI (from `database/API`):
 ```bash
 uvicorn API_main:app --reload
+```
+
+Running web application:
+```bash
+python setup.py
 ```
 
 # SQL Injection
