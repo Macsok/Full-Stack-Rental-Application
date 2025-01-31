@@ -1,6 +1,16 @@
 # Full-Stack-Rental-Application
 This project is a full-stack application designed to manage car rentals. It includes a backend API built with FastAPI and a frontend interface. The application supports various functionalities such as user authentication, car management, and rental transactions. Additionally, it features a master-slave database setup for improved performance and reliability.
 
+Below are some views of the site.
+<div style="display: flex; justify-content: center; gap: 20px;">
+   <img src="./static/cars.png" alt="cars" width="40%"/>
+   <img src="./static/login.png" alt="login" width="40%"/>
+</div>
+<div style="display: flex; justify-content: center; padding: 20px;">
+   <img src="./static/admin.png" alt="admin panel" width="80%"/>
+</div>
+
+
 # Project Features
 
 1. **System Architecture**:
